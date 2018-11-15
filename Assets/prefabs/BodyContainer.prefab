@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 23033072383962822}
   - component: {fileID: 136348951261236610}
   m_Layer: 0
-  m_Name: Body
+  m_Name: CapsuleBody
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -242,7 +242,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waterSurface: {fileID: 0}
-  bouyancyForce: {x: 0, y: 3, z: 0}
+  bouyancyForce: {x: 0, y: 2, z: 0}
   waterDragForce: 8
   airDragForce: 1
 --- !u!114 &114216134147521440
