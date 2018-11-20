@@ -767,6 +767,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114974478260717858, guid: e82975ae2068c45fdab2ae8f35f1fa5d,
+        type: 2}
+      propertyPath: m_AutoTargetPlayer
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e82975ae2068c45fdab2ae8f35f1fa5d, type: 2}
   m_IsPrefabAsset: 0
@@ -1013,6 +1018,7 @@ GameObject:
   - component: {fileID: 695908689}
   - component: {fileID: 695908688}
   - component: {fileID: 695908687}
+  - component: {fileID: 695908691}
   m_Layer: 0
   m_Name: SeaFloor
   m_TagString: Untagged
@@ -1087,6 +1093,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &695908691
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 695908686}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1001 &718958495
 Prefab:
   m_ObjectHideFlags: 0
@@ -1222,10 +1243,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hulls:
   - {fileID: 1130968413938610, guid: db9d84f2057904d43926794d20e65989, type: 2}
+  - {fileID: 1060194193778450, guid: 95636172e978847ffaf6cc8aafb2fa22, type: 2}
   components:
   - {fileID: 1808563246332856, guid: ecdee0d022d3046528631e9232c7875f, type: 2}
   microbeContainer: {fileID: 1605179674144912, guid: 5c6c3c45a9df44df8b4e860a98f375b6,
     type: 2}
+  water: {fileID: 1600013857}
 --- !u!114 &967603061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1237,6 +1260,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00c3debe0512f4c49b53703bff2589ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cam: {fileID: 1173093216}
+--- !u!114 &1173093216 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 114974478260717858, guid: e82975ae2068c45fdab2ae8f35f1fa5d,
+    type: 2}
+  m_PrefabInternal: {fileID: 277492739}
+  m_Script: {fileID: 11500000, guid: e44af8091779fcb40801d5b284353dbe, type: 3}
 --- !u!1001 &1270287495
 Prefab:
   m_ObjectHideFlags: 0
@@ -1313,6 +1343,11 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1168916074439762, guid: e82975ae2068c45fdab2ae8f35f1fa5d,
     type: 2}
   m_PrefabInternal: {fileID: 277492739}
+--- !u!1 &1600013857 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1151579781391562, guid: 6c4e13d3fb4cc427480684f6a6b37f7b,
+    type: 2}
+  m_PrefabInternal: {fileID: 1270287495}
 --- !u!1 &1708154536
 GameObject:
   m_ObjectHideFlags: 0

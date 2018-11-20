@@ -4,15 +4,9 @@ using UnityStandardAssets.Cameras;
 using UnityEngine;
 
 public class CameraDirectorScript : MonoBehaviour {
-    private FreeLookCam cam;
+    [SerializeField] FreeLookCam cam;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    public void SetCameraTarget(GameObject target){
+        cam.SetTarget(target.transform);
+    }
 }

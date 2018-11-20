@@ -24,7 +24,6 @@ public class MicrobeEvolveScript : MonoBehaviour {
     MicrobeBuilderScript microbeBuilder;
 
     void GenerateInitialPopulation(){
-        Debug.Log("Population size = " + populationSize);
         for (int i = 0; i < populationSize; i++){
             microbeBuilder.CreateInitialMicrobe();
         }

@@ -2,22 +2,31 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MicrobeBuilderScript : MonoBehaviour {
+public class MicrobeBuilderScript : MonoBehaviour
+{
     [SerializeField] private GameObject[] hulls;
     [SerializeField] private GameObject[] components;
     [SerializeField] private GameObject microbeContainer;
+    [SerializeField] private GameObject water;
 
-    private void Start()
-    {
-
+    CameraDirectorScript director;
+    
+    private GameObject RandomChoice(GameObject[] objects){
+        int choice = Random.Range(0, objects.Length);
+        return objects[choice];
     }
 
     // Use this for initialization
     public void CreateInitialMicrobe() {
+        if(director == null){
+            director = GetComponent<CameraDirectorScript>();
+        }
+
         GameObject container = Instantiate(microbeContainer);
         // TODO: Change this to be random
-        GameObject mainBody = Instantiate(hulls[0]);
-        mainBody.transform.SetParent(container.transform);
+        //GameObject mainBody = Instantiate(RandomChoice(hulls));
+        GameObject mainBody = Instantiate(hulls[0], container.transform);
+        //mainBody.transform.SetParent(container.transform);
 
         Mesh mainBodyMesh = mainBody.GetComponent<MeshFilter>().mesh;
         // Have to create a new instance of a mesh so that the rotation doesn't
@@ -93,8 +102,8 @@ public class MicrobeBuilderScript : MonoBehaviour {
                 // Set the position of the component to the port on the main body sub the difference between
                 // its transform pos and its port pos
                 obj.transform.position = target.position + (obj.transform.position - component.port.transform.position);
-                obj.transform.SetParent(mainBody.transform);
-                FixedJoint joint = mainBody.AddComponent<FixedJoint>();
+                obj.transform.SetParent(container.transform);
+                FixedJoint joint = container.AddComponent<FixedJoint>();
                 joint.connectedBody = obj.GetComponent<Rigidbody>();
             }
             else
@@ -105,6 +114,18 @@ public class MicrobeBuilderScript : MonoBehaviour {
             // Remove the vertex and normal that have been used from the list of viable locations
             meshVertices.RemoveAt(ind);
             meshNorms.RemoveAt(ind);
+        }
+
+        director.SetCameraTarget(mainBody);
+        BuoyancyControlScript b = container.GetComponent<BuoyancyControlScript>();
+        if (b != null)
+        {
+            b.waterSurface = water.transform;
+            b.SetRigidBody(container.GetComponent<Rigidbody>());
+        }
+        else
+        {
+            Debug.Log("BuoyancyControlCScript was null........");
         }
     }
 	

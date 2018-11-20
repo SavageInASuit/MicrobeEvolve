@@ -5,25 +5,26 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(ConstantForce))]
 
-/* TODO: Maybe this shouldn't use ConstantForce, but actually alter the value
-// of the gravity force for the RigidBody(s) under this GameObject. 
-// This would mean components attached to the hull with mass would affect 
-// the rotation of the body, whereas now they don't
-
-// Altering gravity force could be combined with a constant force for bouyancy
-*/
-
 public class BuoyancyControlScript : MonoBehaviour
 {
+    [SerializeField]
     public Transform waterSurface;
-    public Vector3 bouyancyForce;
-    public int waterDragForce;
-    public int airDragForce;
+    [SerializeField]
+    private Vector3 bouyancyForce;
+    [SerializeField]
+    private int waterDragForce;
+    [SerializeField]
+    private int airDragForce;
 
-    Rigidbody rb;
+    private Rigidbody rb;
     ConstantForce cf;
 
+    [SerializeField]
     bool bouyantMode;
+
+    public void SetRigidBody(Rigidbody body){
+        rb = body;
+    }
 
     // Use this for initialization
     void Start()
