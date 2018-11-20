@@ -3,12 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MicrobeBuilderScript : MonoBehaviour {
-    public GameObject[] components;
-    public Transform[] componentPorts;
-    public GameObject mainBody;
+    [SerializeField] private GameObject[] hulls;
+    [SerializeField] private GameObject[] components;
+    [SerializeField] private GameObject microbeContainer;
 
-	// Use this for initialization
-	void Start () {
+    private void Start()
+    {
+
+    }
+
+    // Use this for initialization
+    public void CreateInitialMicrobe() {
+        GameObject container = Instantiate(microbeContainer);
+        // TODO: Change this to be random
+        GameObject mainBody = Instantiate(hulls[0]);
+        mainBody.transform.SetParent(container.transform);
+
         Mesh mainBodyMesh = mainBody.GetComponent<MeshFilter>().mesh;
         // Have to create a new instance of a mesh so that the rotation doesn't
         // affect the real mesh...
@@ -37,17 +47,17 @@ public class MicrobeBuilderScript : MonoBehaviour {
             i++;
         }
         newMesh.vertices = meshVertices.ToArray();
-        // As the vertices have been altered, we nee to recalculate the normals
+        // As the vertices have been altered, we need to recalculate the normals
         newMesh.RecalculateNormals();
 
         List<Vector3> meshNorms = new List<Vector3>(newMesh.normals);
 
 
-        Debug.Log("Vertices: " + meshVertices.Count);
-        Debug.Log("Normals: " + meshNorms.Count);
-        for (i = 0; i < meshVertices.Count; i++){
-            Debug.Log(i + ": " + meshVertices[i]);
-        }
+        //Debug.Log("Vertices: " + meshVertices.Count);
+        //Debug.Log("Normals: " + meshNorms.Count);
+        //for (i = 0; i < meshVertices.Count; i++){
+        //    Debug.Log(i + ": " + meshVertices[i]);
+        //}
 
         // Seed the RNG for testing purposes
         //Random.InitState(123);
@@ -83,13 +93,13 @@ public class MicrobeBuilderScript : MonoBehaviour {
                 // Set the position of the component to the port on the main body sub the difference between
                 // its transform pos and its port pos
                 obj.transform.position = target.position + (obj.transform.position - component.port.transform.position);
-                obj.transform.SetParent(gameObject.transform);
-                FixedJoint joint = gameObject.AddComponent<FixedJoint>();
+                obj.transform.SetParent(mainBody.transform);
+                FixedJoint joint = mainBody.AddComponent<FixedJoint>();
                 joint.connectedBody = obj.GetComponent<Rigidbody>();
             }
             else
             {
-                Debug.Log("No component port script found!j");
+                Debug.Log("No component port script found on component \'" + obj.name + "\'");
             }
 
             // Remove the vertex and normal that have been used from the list of viable locations
