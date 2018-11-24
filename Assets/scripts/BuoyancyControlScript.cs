@@ -4,6 +4,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(ConstantForce))]
+[RequireComponent(typeof(BoosterScript))]
 
 public class BuoyancyControlScript : MonoBehaviour
 {
@@ -17,10 +18,11 @@ public class BuoyancyControlScript : MonoBehaviour
     private int airDragForce;
 
     private Rigidbody rb;
-    ConstantForce cf;
+    private ConstantForce cf;
+    private BoosterScript booster;
 
     [SerializeField]
-    bool bouyantMode;
+    private bool bouyantMode;
 
     public void SetRigidBody(Rigidbody body){
         rb = body;
@@ -31,6 +33,8 @@ public class BuoyancyControlScript : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         cf = GetComponent<ConstantForce>();
+        booster = GetComponentInChildren<BoosterScript>();
+        booster.SetBoostForce(100f);
     }
 
     // Update is called once per frame
@@ -40,18 +44,20 @@ public class BuoyancyControlScript : MonoBehaviour
         {
             if (!bouyantMode && transform.position.y < waterSurface.position.y)
             {
-                rb.useGravity = false;
+                //rb.useGravity = false;
                 rb.drag = waterDragForce;
                 rb.angularDrag = waterDragForce;
-                cf.force = Vector3.zero;
+                cf.force = bouyancyForce;
+                booster.SetBoostForce(200f);
                 bouyantMode = true;
             }
             else if (bouyantMode && transform.position.y > waterSurface.position.y)
             {
-                rb.useGravity = true;
+                //rb.useGravity = true;
                 rb.drag = airDragForce;
                 rb.angularDrag = airDragForce;
-                cf.force = bouyancyForce;
+                cf.force = Vector3.zero;
+                booster.SetBoostForce(100f);
                 bouyantMode = false;
             }
         }

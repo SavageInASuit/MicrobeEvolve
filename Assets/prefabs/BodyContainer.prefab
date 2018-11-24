@@ -80,7 +80,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waterSurface: {fileID: 0}
-  bouyancyForce: {x: 0, y: 5, z: 0}
+  bouyancyForce: {x: 0, y: 15, z: 0}
   waterDragForce: 8
   airDragForce: 1
   bouyantMode: 0

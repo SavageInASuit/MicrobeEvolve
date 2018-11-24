@@ -23,9 +23,10 @@ public class MicrobeBuilderScript : MonoBehaviour
         }
 
         GameObject container = Instantiate(microbeContainer);
+        container.transform.position = Vector3.up * 5;
         // TODO: Change this to be random
         //GameObject mainBody = Instantiate(RandomChoice(hulls));
-        GameObject mainBody = Instantiate(hulls[0], container.transform);
+        GameObject mainBody = Instantiate(RandomChoice(hulls), container.transform);
         //mainBody.transform.SetParent(container.transform);
 
         Mesh mainBodyMesh = mainBody.GetComponent<MeshFilter>().mesh;
