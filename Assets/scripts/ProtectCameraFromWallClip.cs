@@ -36,6 +36,12 @@ namespace UnityStandardAssets.Cameras
             m_RayHitComparer = new RayHitComparer();
         }
 
+        private void Update()
+        {
+            // allow the user to zoom in and out of the microbe they are following
+            m_OriginalDist -= Input.GetAxis("Mouse ScrollWheel");
+            if (m_OriginalDist < 2) m_OriginalDist = 2;
+        }
 
         private void LateUpdate()
         {

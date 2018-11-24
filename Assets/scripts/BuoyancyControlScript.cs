@@ -19,7 +19,7 @@ public class BuoyancyControlScript : MonoBehaviour
 
     private Rigidbody rb;
     private ConstantForce cf;
-    private BoosterScript booster;
+    private BoosterScript[] boosters;
 
     [SerializeField]
     private bool bouyantMode;
@@ -33,8 +33,11 @@ public class BuoyancyControlScript : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         cf = GetComponent<ConstantForce>();
-        booster = GetComponentInChildren<BoosterScript>();
-        booster.SetBoostForce(100f);
+
+        boosters = GetComponentsInChildren<BoosterScript>();
+
+        foreach(BoosterScript booster in boosters)
+            booster.SetBoostForce(booster.boostForce/2);
     }
 
     // Update is called once per frame
@@ -48,7 +51,10 @@ public class BuoyancyControlScript : MonoBehaviour
                 rb.drag = waterDragForce;
                 rb.angularDrag = waterDragForce;
                 cf.force = bouyancyForce;
-                booster.SetBoostForce(200f);
+
+                foreach (BoosterScript booster in boosters)
+                    booster.SetBoostForce(booster.boostForce);
+
                 bouyantMode = true;
             }
             else if (bouyantMode && transform.position.y > waterSurface.position.y)
@@ -57,7 +63,10 @@ public class BuoyancyControlScript : MonoBehaviour
                 rb.drag = airDragForce;
                 rb.angularDrag = airDragForce;
                 cf.force = Vector3.zero;
-                booster.SetBoostForce(100f);
+
+                foreach (BoosterScript booster in boosters)
+                    booster.SetBoostForce(booster.boostForce/2);
+
                 bouyantMode = false;
             }
         }

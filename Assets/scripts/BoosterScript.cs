@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BoosterScript : MonoBehaviour {
 
-    [SerializeField] private float boostForce = 300f;
+    [SerializeField] public float boostForce = 300f;
 
     Rigidbody body;
 
