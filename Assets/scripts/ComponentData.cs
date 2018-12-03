@@ -4,10 +4,11 @@ namespace Application
 {
     public class ComponentData
     {
-        private int id, meshVertex, scale;
+        private int id, meshVertex; 
+        private float scale;
         private Vector3 rotation;
 
-        public ComponentData(int id, int meshVertex, int scale, Vector3 rotation)
+        public ComponentData(int id, int meshVertex, float scale, Vector3 rotation)
         {
             this.id = id;
             this.meshVertex = meshVertex;
@@ -41,7 +42,7 @@ namespace Application
             }
         }
 
-        public int Scale
+        public float Scale
         {
             get
             {

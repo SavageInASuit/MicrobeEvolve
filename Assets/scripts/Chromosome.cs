@@ -1,13 +1,16 @@
 ﻿using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 namespace Application
 {
     public class Chromosome
     {
         private string chromosomeString;
-        private int hullId, hullScale, hullMass, hullBuoyancy;
+        private int hullId;
+        private float hullScale, hullMass, hullBuoyancy;
         private int componentCount;
+        private float fitness = 0f;
         private ComponentData[] componentData;
 
         private const int HULL_ID_BITS = 3;
@@ -32,7 +35,10 @@ namespace Application
 
         public Chromosome(string chromosome)
         {
-            this.chromosomeString = chromosome;
+            // provided chromosome should be the correct length
+            Debug.Assert(chromosome.Length == CHROMOSOME_LENGTH);
+
+            chromosomeString = chromosome;
             ParseChromosome();
         }
 
@@ -44,15 +50,54 @@ namespace Application
             return new Chromosome(chromosome);
         }
 
+        // Flip bits in the passed chromosome using the mutationRate as a probability
+        public static Chromosome Mutate(Chromosome toMutate, float mutationRate){
+            string newChrom = "";
+            char[] oldChrom = toMutate.ChromosomeString.ToCharArray();
+
+            for (int i = 0; i < oldChrom.Length; i++){
+                char curChar = oldChrom[i];
+                if(UnityEngine.Random.value < mutationRate){
+                    if (curChar == '1')
+                        newChrom += '0';
+                    else
+                        newChrom += '1';
+                }else{
+                    newChrom += curChar;
+                }
+            }
+
+            return new Chromosome(newChrom);
+        }
+
+        public static Chromosome Crossover(Chromosome a, Chromosome b){
+            string newChrom = "";
+            string chromA = a.ChromosomeString;
+            string chromB = b.ChromosomeString;
+
+            // Chromosomes should be the same length
+            Debug.Assert(chromA.Length == chromB.Length);
+
+            int crossInd = (int)Math.Round(UnityEngine.Random.value * chromA.Length);
+            newChrom += chromA.Substring(0, crossInd);
+            newChrom += chromB.Substring(crossInd, chromB.Length - crossInd);
+
+            Debug.Log("Crossover index = " + crossInd);
+            Debug.Log("Length of original Chromosome = " + a.chromosomeString.Length);
+            Debug.Log("Length of new Chromosome = " + newChrom.Length);
+
+            return new Chromosome(newChrom);
+        }
+
         private void ParseChromosome(){
             int cur = 0;
             hullId = BinToDec(chromosomeString.Substring(0, HULL_ID_BITS));
             cur += HULL_ID_BITS;
-            hullScale = BinToDec(chromosomeString.Substring(cur, HULL_SCALE_BITS));
+            hullScale = (BinToDec(chromosomeString.Substring(cur, HULL_SCALE_BITS)) + 10) / 7.0f;
             cur += HULL_SCALE_BITS;
-            hullMass = BinToDec(chromosomeString.Substring(cur, HULL_MASS_BITS));
+            hullMass = (BinToDec(chromosomeString.Substring(cur, HULL_MASS_BITS)) + 1) / 7.0f;
             cur += HULL_MASS_BITS;
-            hullBuoyancy = BinToDec(chromosomeString.Substring(cur, HULL_BUOYANCY_BITS));
+            hullBuoyancy = BinToDec(chromosomeString.Substring(cur, HULL_BUOYANCY_BITS)) / 5.0f;
             cur += HULL_BUOYANCY_BITS;
 
             componentCount = BinToDec(chromosomeString.Substring(cur, COMPONENT_COUNT_BITS));
@@ -66,7 +111,7 @@ namespace Application
                 cur += COMPONENT_ID_BITS;
                 int componentMeshV = BinToDec(chromosomeString.Substring(cur, COMPONENT_MESHV_BITS));
                 cur += COMPONENT_MESHV_BITS;
-                int componentScale = BinToDec(chromosomeString.Substring(cur, COMPONENT_SCALE_BITS));
+                float componentScale = (BinToDec(chromosomeString.Substring(cur, COMPONENT_SCALE_BITS)) + 1) / 5.0f;
                 cur += COMPONENT_SCALE_BITS;
                 Vector3 rotation = new Vector3(BinToDec(chromosomeString.Substring(cur, COMPONENT_ROTATION_BITS)) % 360,
                                                BinToDec(chromosomeString.Substring(cur+COMPONENT_ROTATION_BITS, COMPONENT_ROTATION_BITS)) % 360,
@@ -79,6 +124,8 @@ namespace Application
             return (int)Convert.ToUInt32(gene, 2);
         }
 
+
+        // ------------ Not sure if all of this is needed... or if they should just be public members?
         public int HullId
         {
             get
@@ -92,7 +139,7 @@ namespace Application
             }
         }
 
-        public int HullScale
+        public float HullScale
         {
             get
             {
@@ -105,7 +152,7 @@ namespace Application
             }
         }
 
-        public int HullMass
+        public float HullMass
         {
             get
             {
@@ -118,7 +165,7 @@ namespace Application
             }
         }
 
-        public int HullBuoyancy
+        public float HullBuoyancy
         {
             get
             {
@@ -167,6 +214,19 @@ namespace Application
             set
             {
                 chromosomeString = value;
+            }
+        }
+
+        public float Fitness
+        {
+            get
+            {
+                return fitness;
+            }
+
+            set
+            {
+                fitness = value;
             }
         }
     }

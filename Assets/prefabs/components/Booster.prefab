@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4050037320088528}
   m_Layer: 9
   m_Name: port
-  m_TagString: Untagged
+  m_TagString: MicrobePart
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 136748558582757692}
   m_Layer: 9
   m_Name: Cylinder
-  m_TagString: Untagged
+  m_TagString: MicrobePart
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -57,7 +57,7 @@ GameObject:
   - component: {fileID: 135597013616490882}
   m_Layer: 9
   m_Name: Sphere
-  m_TagString: Untagged
+  m_TagString: MicrobePart
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -75,7 +75,7 @@ GameObject:
   - component: {fileID: 114001140438229978}
   m_Layer: 9
   m_Name: Booster
-  m_TagString: Untagged
+  m_TagString: MicrobePart
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -257,7 +257,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c420fa0d09867404b88fd751658117db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boostForce: 400
+  boostForce: 700
 --- !u!135 &135597013616490882
 SphereCollider:
   m_ObjectHideFlags: 1

@@ -53,7 +53,7 @@ public class BuoyancyControlScript : MonoBehaviour
                 cf.force = bouyancyForce;
 
                 foreach (BoosterScript booster in boosters)
-                    booster.SetBoostForce(booster.boostForce);
+                    booster.SetBoostForce(booster.boostForce*2);
 
                 bouyantMode = true;
             }

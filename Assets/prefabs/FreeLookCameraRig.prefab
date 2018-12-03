@@ -189,7 +189,7 @@ MonoBehaviour:
   sphereCastRadius: 0.1
   visualiseInEditor: 1
   closestDistance: 0.5
-  dontClipTag: Player
+  dontClipTag: MicrobePart
 --- !u!114 &114974478260717858
 MonoBehaviour:
   m_ObjectHideFlags: 1

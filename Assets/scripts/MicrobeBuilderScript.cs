@@ -25,8 +25,7 @@ public class MicrobeBuilderScript : MonoBehaviour
 
         GameObject container = Instantiate(microbeContainer);
         container.transform.position = Vector3.up * 5;
-        // TODO: Change this to be random
-        //GameObject mainBody = Instantiate(RandomChoice(hulls));
+
         GameObject mainBody = Instantiate(RandomChoice(hulls), container.transform);
         //mainBody.transform.SetParent(container.transform);
 
@@ -77,7 +76,6 @@ public class MicrobeBuilderScript : MonoBehaviour
         {
             // Try to position to first part at the port of the main body
             GameObject obj = Instantiate(components[0]);
-            obj.tag = "Player";
             // Transform target = componentPorts[i];
 
             // Empty GO to get a transform and create a port at a random vertex
@@ -131,7 +129,7 @@ public class MicrobeBuilderScript : MonoBehaviour
         }
     }
 
-    public void CreateInitialMicrobe(Chromosome chromosome)
+    public GameObject CreateInitialMicrobe(Chromosome chromosome)
     {
         if (director == null)
         {
@@ -143,6 +141,9 @@ public class MicrobeBuilderScript : MonoBehaviour
 
         GameObject container = Instantiate(microbeContainer);
         container.transform.position = Vector3.up * 5;
+
+        Rigidbody contRb = container.GetComponent<Rigidbody>();
+        contRb.mass = chromosome.HullMass;
 
         int hullId = chromosome.HullId % hulls.Length;
         GameObject mainBody = Instantiate(hulls[hullId], container.transform);
@@ -162,17 +163,29 @@ public class MicrobeBuilderScript : MonoBehaviour
 
         List<Vector3> origVerts = new List<Vector3>(newMesh.vertices);
 
-        // As the initial rotation of the body may not be (0, 0, 0) and vertices
-        // and normals of the mesh are used to position components, we need to
-        // rotate them
+        // As the initial scale may not be (1,1,1) and rotation of the body may 
+        // not be (0, 0, 0) we need to scale and rotate the vertex vectors
+
         Vector3 rot = mainBody.transform.eulerAngles;
         Quaternion rotation = Quaternion.Euler(rot.x, rot.y, rot.z);
         Matrix4x4 m = Matrix4x4.Rotate(rotation);
         int i = 0;
         List<Vector3> meshVertices = new List<Vector3>();
+
+        Vector3 scale = mainBody.transform.localScale;
+        scale.x *= chromosome.HullScale;
+        scale.y *= chromosome.HullScale;
+        scale.z *= chromosome.HullScale;
+        mainBody.transform.localScale = scale;
+
         while (i < origVerts.Count)
         {
-            meshVertices.Add(m.MultiplyPoint3x4(origVerts[i]));
+            Vector3 newV = origVerts[i];
+            newV.x *= mainBody.transform.localScale.x;
+            newV.y *= mainBody.transform.localScale.y;
+            newV.z *= mainBody.transform.localScale.z;
+            newV = m.MultiplyPoint3x4(newV);
+            meshVertices.Add(newV);
             i++;
         }
         newMesh.vertices = meshVertices.ToArray();
@@ -185,7 +198,6 @@ public class MicrobeBuilderScript : MonoBehaviour
         {
             int componentId = chromosome.ComponentData[i].Id % components.Length;
             GameObject obj = Instantiate(components[componentId]);
-            obj.tag = "Player";
 
             // Empty GO to get a transform and create a port at a random vertex
             GameObject dynamicPort = new GameObject();
@@ -196,7 +208,7 @@ public class MicrobeBuilderScript : MonoBehaviour
             int ind = chromosome.ComponentData[i].MeshVertex % meshVertices.Count;
 
             // TODO: Use the rotation from the chromosome component data to rotate the component
-
+            // TODO: Use mass and buoyancy values from chromosome
             target.position = mainBody.transform.position + meshVertices[ind];
             target.rotation = Quaternion.LookRotation(meshNorms[ind]);
 
@@ -213,7 +225,8 @@ public class MicrobeBuilderScript : MonoBehaviour
                 obj.transform.position = target.position + (obj.transform.position - component.port.transform.position);
                 obj.transform.SetParent(container.transform);
                 FixedJoint joint = container.AddComponent<FixedJoint>();
-                joint.connectedBody = obj.GetComponent<Rigidbody>();
+                Rigidbody compRb = obj.GetComponent<Rigidbody>();
+                joint.connectedBody = compRb;
             }
             else
             {
@@ -231,15 +244,13 @@ public class MicrobeBuilderScript : MonoBehaviour
         {
             b.waterSurface = water.transform;
             b.SetRigidBody(container.GetComponent<Rigidbody>());
+            return container;
         }
         else
         {
             Debug.Log("BuoyancyControlCScript was null........");
         }
-    }
 
-    // Update is called once per frame
-    void Update () {
-		
-	}
+        return null;
+    }
 }
