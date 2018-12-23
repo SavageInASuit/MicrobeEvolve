@@ -17,7 +17,7 @@ namespace Application
         private const int HULL_SCALE_BITS = 4;
         private const int HULL_MASS_BITS = 4;
         private const int HULL_BUOYANCY_BITS = 4;
-        private const int COMPONENT_COUNT_BITS = 4; // 16 options
+        private const int COMPONENT_COUNT_BITS = 3; // 16 options
         private const int COMPONENT_ID_BITS = 4; // 16 options
         private const int COMPONENT_MESHV_BITS = 10; // 1024 options
         private const int COMPONENT_SCALE_BITS = 4; // 16 options 0.25, 0.5, 0.75, 1.0...
