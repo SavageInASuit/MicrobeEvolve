@@ -4,32 +4,40 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(ConstantForce))]
-
-/* TODO: Maybe this shouldn't use ConstantForce, but actually alter the value
-// of the gravity force for the RigidBody(s) under this GameObject. 
-// This would mean components attached to the hull with mass would affect 
-// the rotation of the body, whereas now they don't
-
-// Altering gravity force could be combined with a constant force for bouyancy
-*/
+[RequireComponent(typeof(BoosterScript))]
 
 public class BuoyancyControlScript : MonoBehaviour
 {
+    [SerializeField]
     public Transform waterSurface;
-    public Vector3 bouyancyForce;
-    public int waterDragForce;
-    public int airDragForce;
+    [SerializeField]
+    private Vector3 bouyancyForce;
+    [SerializeField]
+    private int waterDragForce;
+    [SerializeField]
+    private int airDragForce;
 
-    Rigidbody rb;
-    ConstantForce cf;
+    private Rigidbody rb;
+    private ConstantForce cf;
+    private BoosterScript[] boosters;
 
-    bool bouyantMode;
+    [SerializeField]
+    private bool bouyantMode;
+
+    public void SetRigidBody(Rigidbody body){
+        rb = body;
+    }
 
     // Use this for initialization
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         cf = GetComponent<ConstantForce>();
+
+        boosters = GetComponentsInChildren<BoosterScript>();
+
+        foreach(BoosterScript booster in boosters)
+            booster.SetBoostForce(booster.boostForce/2);
     }
 
     // Update is called once per frame
@@ -39,18 +47,26 @@ public class BuoyancyControlScript : MonoBehaviour
         {
             if (!bouyantMode && transform.position.y < waterSurface.position.y)
             {
-                rb.useGravity = false;
+                //rb.useGravity = false;
                 rb.drag = waterDragForce;
                 rb.angularDrag = waterDragForce;
-                cf.force = Vector3.zero;
+                cf.force = bouyancyForce;
+
+                foreach (BoosterScript booster in boosters)
+                    booster.SetBoostForce(booster.boostForce*2);
+
                 bouyantMode = true;
             }
             else if (bouyantMode && transform.position.y > waterSurface.position.y)
             {
-                rb.useGravity = true;
+                //rb.useGravity = true;
                 rb.drag = airDragForce;
                 rb.angularDrag = airDragForce;
-                cf.force = bouyancyForce;
+                cf.force = Vector3.zero;
+
+                foreach (BoosterScript booster in boosters)
+                    booster.SetBoostForce(booster.boostForce/2);
+
                 bouyantMode = false;
             }
         }

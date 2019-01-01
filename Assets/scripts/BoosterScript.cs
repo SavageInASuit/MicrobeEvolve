@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BoosterScript : MonoBehaviour {
 
-    public float boostForce = 300f;
+    [SerializeField] public float boostForce = 300f;
 
     Rigidbody body;
 
@@ -17,4 +17,8 @@ public class BoosterScript : MonoBehaviour {
 	void Update () {
         body.AddForce(transform.forward * boostForce * Time.deltaTime); // * Input.GetAxis("Vertical"));
 	}
+
+    public void SetBoostForce(float force){
+        boostForce = force;
+    }
 }

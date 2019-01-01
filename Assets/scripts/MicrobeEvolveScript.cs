@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Application;
 using UnityEngine;
 
 public class MicrobeEvolveScript : MonoBehaviour {
@@ -10,7 +11,7 @@ public class MicrobeEvolveScript : MonoBehaviour {
      * General Idea:
      * Each microbe has its own chromosome which all follow the same format.
      * The chromosome will encode: 
-     * hull_id, hull_mass, hull_buoyancy, component_1_id, component_1_vertex_id...
+     * hull_id, hull_scale, hull_mass, hull_buoyancy, component_1_id, component_1_vertex_id...
      * And so on for the number of components wanted (defined in init options)
      * 
      * When the scene first loads, a population should be generated at the
@@ -21,24 +22,80 @@ public class MicrobeEvolveScript : MonoBehaviour {
     // Should probably have a min value of 3 for the algorithm to work? 
     [Range(1, 100)] [SerializeField] private int populationSize;    // Size of the population throughout the evolution process
 
-    MicrobeBuilderScript microbeBuilder;
+    Chromosome[] population;
+
+    PopulationManagerScript popManager;
 
     void GenerateInitialPopulation(){
-        Debug.Log("Population size = " + populationSize);
         for (int i = 0; i < populationSize; i++){
-            microbeBuilder.CreateInitialMicrobe();
+            Chromosome chromosome = Chromosome.RandomChromosome();
+            population[i] = chromosome;
         }
+
+        popManager.SetGenerationChromosomes(population);
     }
 
     // Use this for initialization
     void Start () {
-        microbeBuilder = GetComponent<MicrobeBuilderScript>();
+        popManager = GetComponent<PopulationManagerScript>();
 
+        population = new Chromosome[populationSize];
         GenerateInitialPopulation();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    public void EvolveNextGeneration()
+    {
+        Debug.Log("Starting to build next gen! " + Random.value);
+        Chromosome[] nextGen = new Chromosome[populationSize];
+
+        // Find the max to use for normalisation when selecting
+        float maxFitness = 0;
+        foreach(Chromosome c in population)
+        {
+            if (c.Fitness > maxFitness)
+                maxFitness = c.Fitness;
+        }
+
+        // Build up the next generation using roulette wheel selection
+        // More likely to select chromosomes with higher fitness values
+        int ind = 0;
+        for (int i = 0; i < populationSize; i++)
+        {
+            // Find the first parent
+            float r = Random.value;
+            float cur = 0;
+            while(cur <= r)
+            {
+                // Add the normalised value
+                cur += population[ind].Fitness / maxFitness;
+                ind++;
+                ind %= populationSize;
+            }
+            ind -= 1;
+            if (ind == -1) ind = populationSize - 1;
+            Chromosome first = population[ind];
+
+            // Find the second parent
+            r = Random.value;
+            cur = 0;
+            while (cur <= r)
+            {
+                // Add the normalised value
+                cur += population[ind].Fitness / maxFitness;
+                ind++;
+                ind %= populationSize;
+            }
+            ind -= 1;
+            if (ind == -1) ind = populationSize - 1;
+            Chromosome second = population[ind];
+
+            Chromosome child = Chromosome.Crossover(first, second);
+            child = Chromosome.Mutate(child, mutationRate);
+            nextGen[i] = child;
+        }
+
+        population = nextGen;
+
+        popManager.SetGenerationChromosomes(population);
+    }
 }

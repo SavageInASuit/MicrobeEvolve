@@ -40,7 +40,6 @@ namespace UnityStandardAssets.Cameras
 			m_TransformTargetRot = transform.localRotation;
         }
 
-
         protected void Update()
         {
             HandleRotationMovement();
