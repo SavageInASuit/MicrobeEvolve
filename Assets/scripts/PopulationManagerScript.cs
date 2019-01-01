@@ -20,9 +20,6 @@ public class PopulationManagerScript : MonoBehaviour {
     [SerializeField]
     private float roundTime;
 
-    private string[] topTenIds;
-    private float[] topTenDists;
-
     private int generation;
     private int chromosomeInd;
 
@@ -33,6 +30,8 @@ public class PopulationManagerScript : MonoBehaviour {
 
     MicrobeBuilderScript microbeBuilder;
     MicrobeEvolveScript microbeEvolver;
+
+    public ScoreListScript listScript;
 
     // Use this for initialization
     void Start () {
@@ -87,49 +86,26 @@ public class PopulationManagerScript : MonoBehaviour {
         }
     }
 
-    private void PlaceMicrobe(string id, float score)
-    {
-        bool inTop = false;
-        int placeInd = -1;
-        for (int i = 0; i < topTenDists.Length; i++)
-        {
-            if (score > topTenDists[i])
-            {
-                inTop = true;
-                placeInd = i;
-                break;
-            }
-        }
-
-        if (inTop)
-        {
-            for(int i = topTenDists.Length - 1; i > placeInd; i--)
-            {
-                topTenDists[i] = topTenDists[i - 1];
-                topTenIds[i] = topTenIds[i - 1];
-            }
-
-            topTenDists[placeInd] = score;
-            topTenIds[placeInd] = id;
-        }
-    }
-
     void StartMicrobe()
     {
         microbeText.text = "Microbe: " + (chromosomeInd + 1) + "/" + population.Length;
 
         if (microbeBuilder != null)
         {
+            if (currentMicrobe != null)
+            {
+                Debug.Log("Calling PlaceMicrobe");
+                listScript.PlaceMicrobe(chromosomeInd.ToString() + "/" + (generation + 1).ToString(), GetFitness(currentMicrobe));
+            }
+
             currentMicrobe = microbeBuilder.CreateInitialMicrobe(population[chromosomeInd]);
             //Debug.Log("Starting microbe: " + microbeCount);
             // Start timer? after specified time, kill microbe and set fitness
             startTime = Time.time;
 
-            PlaceMicrobe("PLACEHOLDER", GetFitness(currentMicrobe));
 
             chromosomeInd++;
         }
-        Debug.Log(topTenDists);
     }
 
     public void SetGenerationChromosomes(Chromosome[] chromosomes)
