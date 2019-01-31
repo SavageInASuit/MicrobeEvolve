@@ -88,10 +88,6 @@ namespace Application
             newChrom += chromA.Substring(0, crossInd);
             newChrom += chromB.Substring(crossInd, chromB.Length - crossInd);
 
-            Debug.Log("Crossover index = " + crossInd);
-            Debug.Log("Length of original Chromosome = " + a.chromosomeString.Length);
-            Debug.Log("Length of new Chromosome = " + newChrom.Length);
-
             return new Chromosome(newChrom);
         }
 

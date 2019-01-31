@@ -40,7 +40,7 @@ public class MicrobeEvolveScript : MonoBehaviour {
         popManager = GetComponent<PopulationManagerScript>();
 
         populationSize = InstanceData.PopulationSize;
-        //TODO: CHANGE MUTATION RATE TO VALUE IN INSTANCE DATA STATIC CLASS
+        mutationRate = InstanceData.MutationRate;
 
         population = new Chromosome[populationSize];
         GenerateInitialPopulation();
