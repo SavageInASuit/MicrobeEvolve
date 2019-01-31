@@ -15,7 +15,7 @@ public class ScoreListScript : MonoBehaviour {
         distEntries = new List<DistanceEntryScript>();
     }
 
-    public void PlaceMicrobe(string id, float score)
+    public void PlaceMicrobe(int id, int generation, float score)
     {
         bool inTop = false;
         int placeInd = -1;
@@ -29,7 +29,9 @@ public class ScoreListScript : MonoBehaviour {
             }
         }
 
-        string pos = ((placeInd == -1) ? distCount + 1 : placeInd+1).ToString();
+        int pos = ((placeInd == -1) ? distCount + 1 : placeInd+1);
+
+        // TODO: Fix issue here affecting the proper display of the gen number
 
         if (distCount < 10)
         {
@@ -46,14 +48,14 @@ public class ScoreListScript : MonoBehaviour {
         {
             for (int i = distCount - 1; i > placeInd; i--)
             {
-                distEntries[i].SetIdAndDist((i+1) + ": " + distEntries[i - 1].idString, distEntries[i - 1].distance);
+                distEntries[i].SetIdAndDist((i+1), distEntries[i - 1].id, distEntries[i - 1].generation, distEntries[i - 1].distance);
             }
 
-            distEntries[placeInd].SetIdAndDist(pos + ": " + id, score);
+            distEntries[placeInd].SetIdAndDist(pos, id, generation, score);
         }
         else if (distCount < 10)
         {
-            distEntries[distCount-1].SetIdAndDist(pos + ": " + id, score);
+            distEntries[distCount-1].SetIdAndDist(pos, id, generation, score);
 
         }
     }

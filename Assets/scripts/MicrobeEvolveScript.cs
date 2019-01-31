@@ -39,6 +39,9 @@ public class MicrobeEvolveScript : MonoBehaviour {
     void Start () {
         popManager = GetComponent<PopulationManagerScript>();
 
+        populationSize = InstanceData.PopulationSize;
+        mutationRate = InstanceData.MutationRate;
+
         population = new Chromosome[populationSize];
         GenerateInitialPopulation();
 	}

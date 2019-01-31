@@ -246,10 +246,9 @@ public class MicrobeBuilderScript : MonoBehaviour
             b.SetRigidBody(container.GetComponent<Rigidbody>());
             return container;
         }
-        else
-        {
-            Debug.Log("BuoyancyControlCScript was null........");
-        }
+
+        Debug.Log("BuoyancyControlCScript was null........");
+
 
         return null;
     }

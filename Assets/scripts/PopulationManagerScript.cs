@@ -16,6 +16,8 @@ public class PopulationManagerScript : MonoBehaviour {
     private TextMeshProUGUI distanceText;
     [SerializeField]
     private TextMeshProUGUI simSpeedText;
+    [SerializeField]
+    private TextMeshProUGUI lifeTimeText;
 
     [SerializeField]
     private float roundTime;
@@ -41,13 +43,17 @@ public class PopulationManagerScript : MonoBehaviour {
         generation = 0;
         chromosomeInd = 0;
 
-        generationText.text = "Gen" + (generation + 1);
+        roundTime = InstanceData.GenerationTime;
+
+        generationText.text = "Gen: " + (generation + 1);
         microbeText.text = "microbe: " + (chromosomeInd+1) + "/" + population.Length;
     }
 
     // Update is called once per frame
     void Update() {
-        if ((population != null) && currentMicrobe != null && Time.time - startTime > roundTime)
+        float curTime = Time.time - startTime;
+        lifeTimeText.text = "Time: " + curTime.ToString("n1") + "/" + roundTime.ToString() + "s";
+        if ((population != null) && currentMicrobe != null && curTime > roundTime)
         {
             population[chromosomeInd - 1].Fitness = GetFitness(currentMicrobe);
             Destroy(currentMicrobe);
@@ -88,14 +94,13 @@ public class PopulationManagerScript : MonoBehaviour {
 
     void StartMicrobe()
     {
-        microbeText.text = "Microbe: " + (chromosomeInd + 1) + "/" + population.Length;
+        microbeText.text = "Microbe: " + (chromosomeInd + 1) + " of " + population.Length;
 
         if (microbeBuilder != null)
         {
             if (currentMicrobe != null)
             {
-                Debug.Log("Calling PlaceMicrobe");
-                listScript.PlaceMicrobe(chromosomeInd.ToString() + "/" + (generation + 1).ToString(), GetFitness(currentMicrobe));
+                listScript.PlaceMicrobe(chromosomeInd, (generation + 1), GetFitness(currentMicrobe));
             }
 
             currentMicrobe = microbeBuilder.CreateInitialMicrobe(population[chromosomeInd]);
@@ -141,7 +146,7 @@ public class PopulationManagerScript : MonoBehaviour {
             Time.timeScale += 1;
             simSpeedText.text = "Sim Speed: " + Time.timeScale + "x";
         }
-        else if (Input.GetKeyDown("down"))
+        else if (Input.GetKeyDown("down") && Time.timeScale > 0)
         {
             Time.timeScale -= 1;
             simSpeedText.text = "Sim Speed: " + Time.timeScale + "x";
