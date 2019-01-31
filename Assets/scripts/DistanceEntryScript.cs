@@ -10,12 +10,19 @@ public class DistanceEntryScript : MonoBehaviour {
 
     public string idString;
     public float distance;
+    public int position;
+    public int id;
+    public int generation;
 
-    public void SetIdAndDist(string id, float dist)
+    public void SetIdAndDist(int position, int id, int generation, float dist)
     {
-        idText.text = id;
-        string[] parts = id.Split(' ');
-        idString = parts[1];
+        this.position = position;
+        this.id = id;
+        this.generation = generation;
+
+        idString = position.ToString() + ". #" + id.ToString() + "/gen " + generation.ToString();
+        idText.text = idString;
+
         distanceText.text = dist.ToString("n2") + "m";
         distance = dist;
     }

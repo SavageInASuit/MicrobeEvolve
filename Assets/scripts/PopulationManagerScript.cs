@@ -88,14 +88,14 @@ public class PopulationManagerScript : MonoBehaviour {
 
     void StartMicrobe()
     {
-        microbeText.text = "Microbe: " + (chromosomeInd + 1) + "/" + population.Length;
+        microbeText.text = "Microbe: " + (chromosomeInd + 1) + " of " + population.Length;
 
         if (microbeBuilder != null)
         {
             if (currentMicrobe != null)
             {
                 Debug.Log("Calling PlaceMicrobe");
-                listScript.PlaceMicrobe(chromosomeInd.ToString() + "/" + (generation + 1).ToString(), GetFitness(currentMicrobe));
+                listScript.PlaceMicrobe(chromosomeInd, (generation + 1), GetFitness(currentMicrobe));
             }
 
             currentMicrobe = microbeBuilder.CreateInitialMicrobe(population[chromosomeInd]);

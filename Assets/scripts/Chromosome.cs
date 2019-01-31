@@ -13,6 +13,12 @@ namespace Application
         private float fitness = 0f;
         private ComponentData[] componentData;
 
+        // TODO: Should bit count variables be abstracted away? Options:
+        //           - Accept a map in the constructor -> <string, int> GENE_NAME => GENE_BITS
+        //             and provide functions to access the values
+        //           - Remove variables from this class and then create a subclass
+        //             which is contains these variables
+        //           - Create an enumeration/class that specifies gene names and bit counts
         private const int HULL_ID_BITS = 3;
         private const int HULL_SCALE_BITS = 4;
         private const int HULL_MASS_BITS = 4;
@@ -22,7 +28,6 @@ namespace Application
         private const int COMPONENT_MESHV_BITS = 10; // 1024 options
         private const int COMPONENT_SCALE_BITS = 4; // 16 options 1/16, 1/16, 2/16...
         private const int COMPONENT_ROTATION_BITS = 9; // x: 0-359, y: 0-359, z: 0-359
-        // TODO: Add component mass and buoyancy?
 
         private static readonly int CHROMOSOME_LENGTH = HULL_ID_BITS +
                                                         HULL_SCALE_BITS +
