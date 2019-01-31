@@ -41,6 +41,8 @@ public class PopulationManagerScript : MonoBehaviour {
         generation = 0;
         chromosomeInd = 0;
 
+        roundTime = InstanceData.GenerationTime;
+
         generationText.text = "Gen" + (generation + 1);
         microbeText.text = "microbe: " + (chromosomeInd+1) + "/" + population.Length;
     }

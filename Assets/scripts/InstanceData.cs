@@ -2,6 +2,7 @@
 public static class InstanceData {
     private static int populationSize = 20;
     private static float mutationRate = 0.05f;
+    private static int generationTime = 10;
 
     public static float MutationRate
     {
@@ -17,7 +18,7 @@ public static class InstanceData {
     }
 
     public static int PopulationSize
-    {
+    { 
         get
         {
             return populationSize;
@@ -26,6 +27,18 @@ public static class InstanceData {
         set
         {
             populationSize = value;
+        }
+    }
+
+    public static int GenerationTime
+    {
+        get
+        {
+            return generationTime;
+        }
+        set
+        {
+            generationTime = value;
         }
     }
 }
