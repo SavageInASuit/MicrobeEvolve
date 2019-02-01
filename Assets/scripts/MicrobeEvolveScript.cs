@@ -48,7 +48,6 @@ public class MicrobeEvolveScript : MonoBehaviour {
 
     public void EvolveNextGeneration()
     {
-        Debug.Log("Starting to build next gen! " + Random.value);
         Chromosome[] nextGen = new Chromosome[populationSize];
 
         // Find the max to use for normalisation when selecting

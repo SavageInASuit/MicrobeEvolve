@@ -74,8 +74,9 @@ public class MicrobeBuilderScript : MonoBehaviour
         // TESTING PURPOSES: Connect the single component to all ports on the main body
         for (i = 0; i < 5; i++)
         {
+            //TODO: Get component ID from the chromosome, instead of using hard coded value
             // Try to position to first part at the port of the main body
-            GameObject obj = Instantiate(components[0]);
+            GameObject obj = Instantiate(components[1]);
             // Transform target = componentPorts[i];
 
             // Empty GO to get a transform and create a port at a random vertex
@@ -220,8 +221,23 @@ public class MicrobeBuilderScript : MonoBehaviour
             ComponentPortScript component = obj.GetComponent<ComponentPortScript>();
             if (component != null)
             {
+                Animator anim = obj.GetComponent<Animator>();
+
+                if(anim != null)
+                {
+                    // use the scale value for this component to offset the component animation
+                    // map the scale factor from its original range to the possible range of animation times
+                    float idleStart = Map(chromosome.ComponentData[i].Scale, 
+                                          0, 
+                                          Chromosome.COMPONENT_SCALE_BITS, 
+                                          0, 
+                                          anim.GetCurrentAnimatorStateInfo(0).length);
+                    anim.Play("LegMovementAnimation", 0, idleStart);
+                }
+
                 // Set the position of the component to the port on the main body sub the difference between
                 // its transform pos and its port pos
+                component.transform.rotation = component.port.transform.rotation;
                 obj.transform.position = target.position + (obj.transform.position - component.port.transform.position);
                 obj.transform.SetParent(container.transform);
                 FixedJoint joint = container.AddComponent<FixedJoint>();
@@ -251,5 +267,10 @@ public class MicrobeBuilderScript : MonoBehaviour
 
 
         return null;
+    }
+
+    private float Map(float orig, float inFrom, float inTo, float outFrom, float outTo)
+    {
+        return outFrom + (((inFrom - orig) / (inTo - inFrom)) * (outTo - outFrom));
     }
 }

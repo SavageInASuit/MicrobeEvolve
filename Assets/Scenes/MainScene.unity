@@ -2265,6 +2265,7 @@ MonoBehaviour:
   - {fileID: 1376813257147862, guid: 59577e34799d54e629511b6256d8dbe9, type: 3}
   components:
   - {fileID: 1808563246332856, guid: ecdee0d022d3046528631e9232c7875f, type: 3}
+  - {fileID: 6773488346856651570, guid: 6bcd5aa97ef954e9b9b266cd63e120c7, type: 3}
   microbeContainer: {fileID: 1605179674144912, guid: 5c6c3c45a9df44df8b4e860a98f375b6,
     type: 3}
   water: {fileID: 1600013857}

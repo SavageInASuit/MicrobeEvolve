@@ -26,7 +26,7 @@ namespace Application
         private const int COMPONENT_COUNT_BITS = 3; // 8 options 0-7
         private const int COMPONENT_ID_BITS = 4; // 16 options
         private const int COMPONENT_MESHV_BITS = 10; // 1024 options
-        private const int COMPONENT_SCALE_BITS = 4; // 16 options 1/16, 1/16, 2/16...
+        public const int COMPONENT_SCALE_BITS = 4; // 16 options 1/16, 1/16, 2/16...
         private const int COMPONENT_ROTATION_BITS = 9; // x: 0-359, y: 0-359, z: 0-359
 
         private static readonly int CHROMOSOME_LENGTH = HULL_ID_BITS +
