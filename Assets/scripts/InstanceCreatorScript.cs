@@ -7,6 +7,7 @@ using TMPro;
 public class InstanceCreatorScript : MonoBehaviour
 {
     public Button startInstanceButton;
+    public Button backToMainMenuButton;
 
     public Slider popSizeSlider;
     public Slider genTimeSlider;
@@ -19,6 +20,7 @@ public class InstanceCreatorScript : MonoBehaviour
     public void Start()
     {
         startInstanceButton.onClick.AddListener(StartInstance);
+        backToMainMenuButton.onClick.AddListener(GoBackToMainMenu);
 
         popSizeSlider.onValueChanged.AddListener(UpdatePopulationText);
         genTimeSlider.onValueChanged.AddListener(UpdateTimeText);
@@ -33,6 +35,11 @@ public class InstanceCreatorScript : MonoBehaviour
         InstanceData.MutationRate = mutationRateSlider.value;
 
         SceneManager.LoadScene("MainScene");
+    }
+
+    public void GoBackToMainMenu()
+    {
+        SceneManager.LoadScene("MainMenuScene");
     }
 
     void UpdatePopulationText(float value)

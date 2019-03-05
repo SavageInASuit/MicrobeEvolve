@@ -29,7 +29,7 @@ namespace Application
         public const int COMPONENT_SCALE_BITS = 4; // 16 options 1/16, 1/16, 2/16...
         private const int COMPONENT_ROTATION_BITS = 9; // x: 0-359, y: 0-359, z: 0-359
 
-        private static readonly int CHROMOSOME_LENGTH = HULL_ID_BITS +
+        public static readonly int CHROMOSOME_LENGTH = HULL_ID_BITS +
                                                         HULL_SCALE_BITS +
                                                         HULL_MASS_BITS +
                                                         HULL_BUOYANCY_BITS +
@@ -74,6 +74,23 @@ namespace Application
             }
 
             return new Chromosome(newChrom);
+        }
+
+        // Flip bits in the passed chromosome using the mutationRate as a probability
+        public static Chromosome MutateSingle(Chromosome toMutate, float mutationRate)
+        {
+            char[] oldChrom = toMutate.ChromosomeString.ToCharArray();
+
+            if (UnityEngine.Random.value < mutationRate)
+            {
+                int charInd = (int) Mathf.Floor(UnityEngine.Random.value * oldChrom.Length);
+                if (oldChrom[charInd] == '1')
+                    oldChrom[charInd] = '0';
+                else
+                    oldChrom[charInd] = '1';
+            }
+
+            return new Chromosome(new string(oldChrom));
         }
 
         public static Chromosome Crossover(Chromosome a, Chromosome b){
@@ -122,10 +139,25 @@ namespace Application
             }
         }
 
+        public string GetChromosomeAsHex()
+        {
+            string output = "";
+            for(int ind = 0; ind < chromosomeString.Length; ind += 4)
+            {
+                int h_val = 0;
+                for(int off = 0; off < 4; off++)
+                {
+                    if (ind + off < chromosomeString.Length)
+                        h_val += (int)Math.Pow(2, off) * (int)char.GetNumericValue(chromosomeString[ind + off]);
+                }
+                output += h_val.ToString("X");
+            }
+            return output;
+        }
+
         private int BinToDec(string gene){
             return (int)Convert.ToUInt32(gene, 2);
         }
-
 
         // ------------ Not sure if all of this is needed... or if they should just be public members?
         public int HullId

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - MicrobePart
   - Microbe
+  - DistanceEntry
   layers:
   - Default
   - TransparentFX

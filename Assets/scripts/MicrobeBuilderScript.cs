@@ -9,6 +9,8 @@ public class MicrobeBuilderScript : MonoBehaviour
     [SerializeField] private GameObject[] components;
     [SerializeField] private GameObject microbeContainer;
     [SerializeField] private GameObject water;
+    [SerializeField]
+    private Transform centerPole;
 
     CameraDirectorScript director;
     
@@ -265,8 +267,14 @@ public class MicrobeBuilderScript : MonoBehaviour
 
         Debug.Log("BuoyancyControlCScript was null........");
 
+        return container;
+    }
 
-        return null;
+    public GameObject CreateMicrobeAtPosition(Chromosome chromosome, Vector3 position)
+    {
+        GameObject microbe = CreateInitialMicrobe(chromosome);
+        microbe.transform.position = position;
+        return microbe;
     }
 
     private float Map(float orig, float inFrom, float inTo, float outFrom, float outTo)
