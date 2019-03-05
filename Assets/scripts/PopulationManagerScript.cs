@@ -41,27 +41,28 @@ public class PopulationManagerScript : MonoBehaviour {
         microbeEvolver = GetComponent<MicrobeEvolveScript>();
 
         generation = 0;
-        chromosomeInd = 0;
+        chromosomeInd = -1;
 
         roundTime = InstanceData.GenerationTime;
 
         generationText.text = "Gen: " + (generation + 1);
-        microbeText.text = "microbe: " + (chromosomeInd+1) + "/" + population.Length;
     }
 
     // Update is called once per frame
     void Update() {
         float curTime = Time.time - startTime;
         lifeTimeText.text = "Time: " + curTime.ToString("n1") + "/" + roundTime.ToString() + "s";
-        if ((population != null) && currentMicrobe != null && curTime > roundTime)
+        if (currentMicrobe != null && curTime > roundTime)
         {
-            population[chromosomeInd - 1].Fitness = GetFitness(currentMicrobe);
+            population[chromosomeInd].Fitness = GetFitness(currentMicrobe);
+
+            listScript.PlaceMicrobe(chromosomeInd + 1, generation + 1, GetFitness(currentMicrobe), population[chromosomeInd]);
+            
             Destroy(currentMicrobe);
             // If we have processed the final microbe, we can start the next gen
-            if (chromosomeInd == population.Length)
+            if (chromosomeInd == population.Length - 1)
             {
                 // exit from function and start the evolution process
-                chromosomeInd = 0;
                 microbeEvolver.EvolveNextGeneration();
 
                 return;
@@ -78,38 +79,36 @@ public class PopulationManagerScript : MonoBehaviour {
         if (currentMicrobe != null)
         {
             distanceText.text = "Distance: " + GetFitness(currentMicrobe).ToString("n2") + "m";
+
+            MeshRenderer[] rends = currentMicrobe.GetComponentsInChildren<MeshRenderer>();
+            for (int i = 0; i < rends.Length; i++)
+            {
+                Color c = rends[i].material.color;
+                c.g -= 1f / roundTime * Time.deltaTime;
+                c.b -= 1f / roundTime * Time.deltaTime;
+                rends[i].material.color = c;
+            }
         }
 
         CheckSpeed();
-
-        MeshRenderer[] rends = currentMicrobe.GetComponentsInChildren<MeshRenderer>();
-        for (int i = 0; i < rends.Length; i++)
-        {
-            Color c = rends[i].material.color;
-            c.g -= 1f / roundTime * Time.deltaTime;
-            c.b -= 1f / roundTime * Time.deltaTime;
-            rends[i].material.color = c;
-        }
     }
 
     void StartMicrobe()
     {
-        microbeText.text = "Microbe: " + (chromosomeInd + 1) + " of " + population.Length;
-
         if (microbeBuilder != null)
         {
-            if (currentMicrobe != null)
+            chromosomeInd++;
+            microbeText.text = "Microbe: " + (chromosomeInd + 1) + " of " + population.Length;
+
+            if (chromosomeInd < population.Length)
             {
-                listScript.PlaceMicrobe(chromosomeInd, (generation + 1), GetFitness(currentMicrobe));
+                currentMicrobe = microbeBuilder.CreateInitialMicrobe(population[chromosomeInd]);
+                currentMicrobe.GetComponent<MicrobeDataScript>().SetStartingPosition(new Vector3(0, 0, 0));
+                //Debug.Log("Starting microbe: " + microbeCount);
+                // Start timer? after specified time, kill microbe and set fitness
+                startTime = Time.time;
             }
 
-            currentMicrobe = microbeBuilder.CreateInitialMicrobe(population[chromosomeInd]);
-            //Debug.Log("Starting microbe: " + microbeCount);
-            // Start timer? after specified time, kill microbe and set fitness
-            startTime = Time.time;
-
-
-            chromosomeInd++;
         }
     }
 
@@ -118,7 +117,8 @@ public class PopulationManagerScript : MonoBehaviour {
         population = chromosomes;
 
         generation++;
-        generationText.text = "Gen" + (generation+1);
+        chromosomeInd = -1;
+        generationText.text = "Gen: " + (generation + 1);
 
         StartMicrobe();
     }

@@ -1,9 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
+using Application;
 
-public class DistanceEntryScript : MonoBehaviour {
+public class DistanceEntryScript : MonoBehaviour
+{
 
     public TextMeshProUGUI idText;
     public TextMeshProUGUI distanceText;
@@ -14,16 +17,35 @@ public class DistanceEntryScript : MonoBehaviour {
     public int id;
     public int generation;
 
-    public void SetIdAndDist(int position, int id, int generation, float dist)
+    private Chromosome chromosome;
+
+    public void SetData(int position, int id, int generation, float dist, Chromosome chromosome)
     {
         this.position = position;
         this.id = id;
         this.generation = generation;
+
+        this.chromosome = chromosome;
 
         idString = position.ToString() + ". #" + id.ToString() + "/gen " + generation.ToString();
         idText.text = idString;
 
         distanceText.text = dist.ToString("n2") + "m";
         distance = dist;
+    }
+
+    public Chromosome GetChromosome()
+    {
+        return chromosome;
+    }
+
+    public void OnMouseOver()
+    {
+        Debug.Log(position.ToString() + ". #" + id.ToString() + "/gen " + generation.ToString());
+    }
+
+    public void OnMouseEnter()
+    {
+        Debug.Log(position.ToString() + ". #" + id.ToString() + "/gen " + generation.ToString());
     }
 }

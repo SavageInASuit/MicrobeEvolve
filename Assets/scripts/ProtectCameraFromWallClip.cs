@@ -40,8 +40,13 @@ namespace UnityStandardAssets.Cameras
         private void LateUpdate()
         {
             float scroll = Input.GetAxis("Mouse ScrollWheel") * 10;
-            if (scroll != 0)
+            if (scroll > float.Epsilon) {
                 m_OriginalDist += scroll;
+            } 
+            else if(scroll < float.Epsilon)
+            {
+                m_OriginalDist += scroll;
+            }
 
             // initially set the target distance
             float targetDist = m_OriginalDist;
