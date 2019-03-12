@@ -93,8 +93,6 @@ public class FFAPopulationManagerScript : MonoBehaviour {
 
     void StartMicrobes()
     {
-        Debug.Log("Called StartMicrobes");
-
         if (needToSpawn)
         {
             Debug.Log("Needed to spawn microbes!");
@@ -114,8 +112,7 @@ public class FFAPopulationManagerScript : MonoBehaviour {
                 float yRows = Mathf.Ceil(population.Length / xRows);
                 Debug.Log("xRows: " + xRows);
                 Debug.Log("yRows: " + yRows);
-                // 160 is the width of the pool - giving 20 units each side = 140
-                float width = 140f;
+                float width = (InstanceData.PoolScale * 10f) - 40f;
                 float spacing = width / xRows;
                 int ind = 0;
                 Vector3 pos = new Vector3(-(width / 2), 8, -(width / 2));
@@ -140,10 +137,6 @@ public class FFAPopulationManagerScript : MonoBehaviour {
                 chromosomeInd++;
                 needToSpawn = false;
             }
-        }
-        else
-        {
-            Debug.Log("Did not need to spawn microbes");
         }
     }
 

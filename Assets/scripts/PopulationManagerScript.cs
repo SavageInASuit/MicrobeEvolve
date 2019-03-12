@@ -33,6 +33,8 @@ public class PopulationManagerScript : MonoBehaviour {
 
     private float startTime;
 
+    private float distLimit;
+
     private float maxGenDist;
 
     private float simSpeed = 1;
@@ -50,6 +52,10 @@ public class PopulationManagerScript : MonoBehaviour {
     void Start () {
         microbeBuilder = GetComponent<MicrobeBuilderScript>();
         microbeEvolver = GetComponent<MicrobeEvolveScript>();
+
+        // Limit on distance travelled for fitness is the distance from the 
+        // center point to the corner, otherwise microbe is out of pool
+        distLimit = Mathf.Sqrt(Mathf.Pow(InstanceData.PoolScale * 10f, 2f) + Mathf.Pow(InstanceData.PoolScale * 10f, 2f)) / 2f;
 
         generation = 0;
         chromosomeInd = -1;
@@ -148,7 +154,7 @@ public class PopulationManagerScript : MonoBehaviour {
     {
         Vector2 pos = new Vector2(microbe.transform.position.x, microbe.transform.position.z);
 
-        if(pos.magnitude > 115.0f)
+        if(pos.magnitude > distLimit)
         {
             return 0.1f;
         }

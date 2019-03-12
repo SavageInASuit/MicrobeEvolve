@@ -29,7 +29,8 @@ namespace UnityStandardAssets.Cameras
             // find the camera in the object hierarchy
             m_Cam = GetComponentInChildren<Camera>().transform;
             m_Pivot = m_Cam.parent;
-            m_OriginalDist = m_Cam.localPosition.magnitude;
+            // m_OriginalDist = m_Cam.localPosition.magnitude;
+            m_OriginalDist = 15f;
             m_CurrentDist = m_OriginalDist;
 
             // create a new RayHitComparer
