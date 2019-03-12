@@ -18,20 +18,38 @@ public class PopulationManagerScript : MonoBehaviour {
     private TextMeshProUGUI simSpeedText;
     [SerializeField]
     private TextMeshProUGUI lifeTimeText;
+    [SerializeField]
+    private GameObject pausedText;
+
 
     [SerializeField]
     private float roundTime;
+
+    [SerializeField]
+    private GraphScript graph;
 
     private int generation;
     private int chromosomeInd;
 
     private float startTime;
 
+    private float distLimit;
+
+    private float maxGenDist;
+
+    private float simSpeed = 1;
+    private bool paused;
+
+    private Vector2 prevPos;
+    private Vector2 curPos;
+    private float distTravelled;
+
     private Chromosome[] population;
     private GameObject currentMicrobe;
 
     MicrobeBuilderScript microbeBuilder;
     MicrobeEvolveScript microbeEvolver;
+    DataLoggerScript dataLogger;
 
     public ScoreListScript listScript;
 
@@ -39,11 +57,17 @@ public class PopulationManagerScript : MonoBehaviour {
     void Start () {
         microbeBuilder = GetComponent<MicrobeBuilderScript>();
         microbeEvolver = GetComponent<MicrobeEvolveScript>();
+        dataLogger = GetComponent<DataLoggerScript>();
+
+        // Limit on distance travelled for fitness is the distance from the 
+        // center point to the corner, otherwise microbe is out of pool
+        distLimit = Mathf.Sqrt(Mathf.Pow(InstanceData.PoolScale * 10f, 2f) + Mathf.Pow(InstanceData.PoolScale * 10f, 2f)) / 2f;
 
         generation = 0;
         chromosomeInd = -1;
 
         roundTime = InstanceData.GenerationTime;
+        Time.timeScale = 1f;
 
         generationText.text = "Gen: " + (generation + 1);
     }
@@ -55,19 +79,38 @@ public class PopulationManagerScript : MonoBehaviour {
         if (currentMicrobe != null && curTime > roundTime)
         {
             population[chromosomeInd].Fitness = GetFitness(currentMicrobe);
+            if (chromosomeInd == 0)
+                graph.AddPoint(population[chromosomeInd].Fitness);
+            if (population[chromosomeInd].Fitness > maxGenDist)
+            {
+                maxGenDist = population[chromosomeInd].Fitness;
+                graph.ChangeLastPoint(maxGenDist);
+            }
 
-            listScript.PlaceMicrobe(chromosomeInd + 1, generation + 1, GetFitness(currentMicrobe), population[chromosomeInd]);
+            float fitness = GetFitness(currentMicrobe);
+            listScript.PlaceMicrobe(chromosomeInd + 1, generation + 1, fitness, population[chromosomeInd]);
+            string[] parents = population[chromosomeInd].GetParents();
+            dataLogger.AddData(generation.ToString(), 
+                               chromosomeInd.ToString(), 
+                               fitness.ToString(), 
+                               distTravelled.ToString(), 
+                               population[chromosomeInd].ChromosomeString,
+                               parents[0],
+                               parents[1]);
             
             Destroy(currentMicrobe);
             // If we have processed the final microbe, we can start the next gen
             if (chromosomeInd == population.Length - 1)
             {
+                graph.ChangeLastPoint(maxGenDist);
+                maxGenDist = 0f;
                 // exit from function and start the evolution process
                 microbeEvolver.EvolveNextGeneration();
 
                 return;
             }
 
+            distTravelled = 0f;
             StartMicrobe();
 
         }
@@ -79,6 +122,11 @@ public class PopulationManagerScript : MonoBehaviour {
         if (currentMicrobe != null)
         {
             distanceText.text = "Distance: " + GetFitness(currentMicrobe).ToString("n2") + "m";
+
+            curPos = new Vector2(currentMicrobe.transform.position.x, currentMicrobe.transform.position.z);
+            distTravelled += Vector2.Distance(prevPos, curPos);
+
+            prevPos = curPos;
 
             MeshRenderer[] rends = currentMicrobe.GetComponentsInChildren<MeshRenderer>();
             for (int i = 0; i < rends.Length; i++)
@@ -127,7 +175,7 @@ public class PopulationManagerScript : MonoBehaviour {
     {
         Vector2 pos = new Vector2(microbe.transform.position.x, microbe.transform.position.z);
 
-        if(pos.magnitude > 115.0f)
+        if(pos.magnitude > distLimit)
         {
             return 0.1f;
         }
@@ -137,18 +185,37 @@ public class PopulationManagerScript : MonoBehaviour {
 
     private void CheckSpeed()
     {
-        if (Input.GetKeyDown("space"))
+        if (Input.anyKey)
         {
-            Time.timeScale = 1;
-            simSpeedText.text = "Sim Speed: " + Time.timeScale + "x";
-        }else if (Input.GetKeyDown("up"))
-        {
-            Time.timeScale += 1;
-            simSpeedText.text = "Sim Speed: " + Time.timeScale + "x";
-        }
-        else if (Input.GetKeyDown("down") && Time.timeScale > 0)
-        {
-            Time.timeScale -= 1;
+            if (Input.GetKeyDown("space"))
+            {
+                simSpeed = 1;
+            }
+            else if (Input.GetKeyDown("up"))
+            {
+                simSpeed += 1;
+            }
+            else if (Input.GetKeyDown("down") && Time.timeScale > 1)
+            {
+                simSpeed -= 1;
+            }else if (Input.GetKeyDown(KeyCode.P))
+            {
+                if (Time.timeScale == 0) {
+                    Time.timeScale = simSpeed;
+                    paused = false;
+                }
+                else
+                {
+                    Time.timeScale = 0;
+                    paused = true;
+                }
+
+                pausedText.SetActive(paused);
+            }
+
+            if (!paused)
+                Time.timeScale = simSpeed;
+
             simSpeedText.text = "Sim Speed: " + Time.timeScale + "x";
         }
     }

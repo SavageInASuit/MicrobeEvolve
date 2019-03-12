@@ -22,7 +22,7 @@ public class MenuManagerScript : MonoBehaviour
     void Start()
     {
         newInstanceButton.onClick.AddListener(GoToNewInstanceScene);
-        newFreeforallInstanceButton.onClick.AddListener(GoToNewInstanceScene);
+        newFreeforallInstanceButton.onClick.AddListener(GoToFreeforallScene);
         loadMicrobeButton.onClick.AddListener(GoToLoadMicrobeScene);
         exitButton.onClick.AddListener(GoToNewInstanceScene);
     }

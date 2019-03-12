@@ -27,6 +27,9 @@ public class FFAPopulationManagerScript : MonoBehaviour {
 
     private float startTime;
 
+    private float simSpeed = 1;
+    private bool paused;
+
     private Chromosome[] population;
     // TODO: change to being current best? Have the best be highlighted in the scene
     private GameObject currentMicrobe;
@@ -49,6 +52,7 @@ public class FFAPopulationManagerScript : MonoBehaviour {
         chromosomeInd = 0;
 
         roundTime = InstanceData.GenerationTime;
+        Time.timeScale = 1f;
 
         generationText.text = "Gen: " + (generation + 1);
         // microbeText.text = "microbe: " + (chromosomeInd+1) + "/" + population.Length;
@@ -89,8 +93,6 @@ public class FFAPopulationManagerScript : MonoBehaviour {
 
     void StartMicrobes()
     {
-        Debug.Log("Called StartMicrobes");
-
         if (needToSpawn)
         {
             Debug.Log("Needed to spawn microbes!");
@@ -110,8 +112,7 @@ public class FFAPopulationManagerScript : MonoBehaviour {
                 float yRows = Mathf.Ceil(population.Length / xRows);
                 Debug.Log("xRows: " + xRows);
                 Debug.Log("yRows: " + yRows);
-                // 160 is the width of the pool - giving 20 units each side = 140
-                float width = 140f;
+                float width = (InstanceData.PoolScale * 10f) - 40f;
                 float spacing = width / xRows;
                 int ind = 0;
                 Vector3 pos = new Vector3(-(width / 2), 8, -(width / 2));
@@ -136,10 +137,6 @@ public class FFAPopulationManagerScript : MonoBehaviour {
                 chromosomeInd++;
                 needToSpawn = false;
             }
-        }
-        else
-        {
-            Debug.Log("Did not need to spawn microbes");
         }
     }
 
@@ -168,18 +165,37 @@ public class FFAPopulationManagerScript : MonoBehaviour {
 
     private void CheckSpeed()
     {
-        if (Input.GetKeyDown("space"))
+        if (Input.anyKey)
         {
-            Time.timeScale = 1;
-            simSpeedText.text = "Sim Speed: " + Time.timeScale + "x";
-        }else if (Input.GetKeyDown("up"))
-        {
-            Time.timeScale += 1;
-            simSpeedText.text = "Sim Speed: " + Time.timeScale + "x";
-        }
-        else if (Input.GetKeyDown("down") && Time.timeScale > 0)
-        {
-            Time.timeScale -= 1;
+            if (Input.GetKeyDown("space"))
+            {
+                simSpeed = 1;
+            }
+            else if (Input.GetKeyDown("up"))
+            {
+                simSpeed += 1;
+            }
+            else if (Input.GetKeyDown("down") && Time.timeScale > 1)
+            {
+                simSpeed -= 1;
+            }
+            else if (Input.GetKeyDown(KeyCode.P))
+            {
+                if (Time.timeScale == 0)
+                {
+                    Time.timeScale = simSpeed;
+                    paused = false;
+                }
+                else
+                {
+                    Time.timeScale = 0;
+                    paused = true;
+                }
+            }
+
+            if (!paused)
+                Time.timeScale = simSpeed;
+
             simSpeedText.text = "Sim Speed: " + Time.timeScale + "x";
         }
     }
