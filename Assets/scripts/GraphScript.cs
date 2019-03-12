@@ -15,6 +15,10 @@ public class GraphScript : MonoBehaviour
     private GameObject graphLine;
 
     [SerializeField]
+    private RectTransform canvasRect;
+    private float magicDivider;
+
+    [SerializeField]
     private float horPadding;
     [SerializeField]
     private float vertPadding;
@@ -55,6 +59,15 @@ public class GraphScript : MonoBehaviour
 
         if (maxYValue > 0)
             usingMaxYValue = true;
+
+        // Work out by what value to divide line lengths... Depends on dimensions
+        // of the UI Canvas
+        // 2.35f when canvas scale 0.4271
+        // 1.32f when              0.7521
+        // dy/dx = (1.32 - 2.35) / (0.7521 - 0.4271) = -3.1692
+        // -3.1692 * 0.4271 + b = 2.35
+        // 2.35 + (3.1692 * 0.4271) = b = 3.7036
+        magicDivider = (-3.1692f * canvasRect.localScale.x) + 3.7036f;
 
         RedrawGraph();
     }
@@ -159,9 +172,7 @@ public class GraphScript : MonoBehaviour
         rect.anchoredPosition = pos;
 
         // Dividing by magic value to make lines the correct length...
-        // TODO: Figure out why lines are a fixed ration longer than they should be
-        float length = Vector2.Distance(p1, p2) / 2.35f;
-        // length = Mathf.Sqrt(Mathf.Pow(p2.x - p1.x, 2) + Mathf.Pow(p2.y - p2.y, 2));
+        float length = Vector2.Distance(p1, p2) / magicDivider;
         rect.sizeDelta = new Vector2(length, 2);
 
         Vector2 dir = (p2 - p1).normalized;

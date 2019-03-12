@@ -617,5 +617,10 @@ PrefabInstance:
       propertyPath: horPadding
       value: 20
       objectReference: {fileID: 0}
+    - target: {fileID: 3208765194469843884, guid: 6acf6ff49439c46ac9b16dfd0875d152,
+        type: 3}
+      propertyPath: canvasRect
+      value: 
+      objectReference: {fileID: 1676519964}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6acf6ff49439c46ac9b16dfd0875d152, type: 3}
