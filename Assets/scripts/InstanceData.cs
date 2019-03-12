@@ -1,10 +1,11 @@
 ﻿// Static class to hold the options the user selects in the new instance menu!
 public static class InstanceData {
-    private static int populationSize = 12;
-    private static float mutationRate = 0.05f;
+    private static int populationSize = 30;
+    private static float mutationRate = 0.15f;
     private static int generationTime = 10;
     private static string chromosomeString = "";
-    private static float poolScale = 12f;
+    private static float poolScale = 20f;
+    private static bool singleMutate = true;
 
     public static float MutationRate
     {
@@ -65,6 +66,18 @@ public static class InstanceData {
         set
         {
             poolScale = value;
+        }
+    }
+
+    public static bool SingleMutate
+    {
+        get
+        {
+            return singleMutate;
+        }
+        set
+        {
+            singleMutate = value;
         }
     }
 }

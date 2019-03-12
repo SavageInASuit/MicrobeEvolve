@@ -19,7 +19,13 @@ public class DataLoggerScript : MonoBehaviour
         data = new List<string[]>();
 
         TimeSpan ts = DateTime.UtcNow - new DateTime(1970, 1, 1);
-        fullPath = filePathPrefix + ts.TotalSeconds + ".csv";
+        string muteType = InstanceData.SingleMutate ? "single-bit" : "random-bits";
+        string muteRate = InstanceData.MutationRate.ToString().Replace('.', '-');
+        muteType += '-' + muteRate;
+        fullPath = filePathPrefix + 
+                   "pop-" + InstanceData.PopulationSize + 
+                   "_" + muteType + "_" +
+                   ts.TotalSeconds + ".csv";
 
         fileExists = File.Exists(fullPath);
     }

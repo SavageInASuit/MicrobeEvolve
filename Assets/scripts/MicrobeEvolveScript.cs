@@ -101,7 +101,10 @@ public class MicrobeEvolveScript : MonoBehaviour {
             Chromosome second = population[indSecond];
 
             Chromosome child = Chromosome.Crossover(first, second);
-            child = Chromosome.Mutate(child, mutationRate);
+            if (InstanceData.SingleMutate)
+                child = Chromosome.MutateSingle(child, mutationRate);
+            else
+                child = Chromosome.Mutate(child, mutationRate);
             child.SetParents(indFirst, indSecond);
             nextGen[i] = child;
         }
