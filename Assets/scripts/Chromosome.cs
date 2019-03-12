@@ -17,8 +17,11 @@ namespace Application
         //           - Accept a map in the constructor -> <string, int> GENE_NAME => GENE_BITS
         //             and provide functions to access the values
         //           - Remove variables from this class and then create a subclass
-        //             which is contains these variables
+        //             which contains these variables
         //           - Create an enumeration/class that specifies gene names and bit counts
+        // 
+        // TODO: Implement component bits specifying booster force and possibly
+        //       leg movement speed
         private const int HULL_ID_BITS = 3;
         private const int HULL_SCALE_BITS = 4;
         private const int HULL_MASS_BITS = 4;

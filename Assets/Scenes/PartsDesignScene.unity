@@ -284,16 +284,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Leg
       objectReference: {fileID: 0}
-    - target: {fileID: 6773488346856651570, guid: 6bcd5aa97ef954e9b9b266cd63e120c7,
-        type: 3}
-      propertyPath: m_TagString
-      value: MicrobePart
-      objectReference: {fileID: 0}
-    - target: {fileID: 6773488346856651570, guid: 6bcd5aa97ef954e9b9b266cd63e120c7,
-        type: 3}
-      propertyPath: m_Layer
-      value: 10
-      objectReference: {fileID: 0}
     - target: {fileID: 6773488346856651569, guid: 6bcd5aa97ef954e9b9b266cd63e120c7,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -348,25 +338,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6773488348263416703, guid: 6bcd5aa97ef954e9b9b266cd63e120c7,
-        type: 3}
-      propertyPath: m_Layer
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 6773488346890185546, guid: 6bcd5aa97ef954e9b9b266cd63e120c7,
-        type: 3}
-      propertyPath: m_Layer
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 6773488347800610332, guid: 6bcd5aa97ef954e9b9b266cd63e120c7,
-        type: 3}
-      propertyPath: m_Layer
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 1517972038, guid: 6bcd5aa97ef954e9b9b266cd63e120c7, type: 3}
-      propertyPath: m_Layer
-      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6bcd5aa97ef954e9b9b266cd63e120c7, type: 3}
