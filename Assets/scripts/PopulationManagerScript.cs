@@ -89,7 +89,14 @@ public class PopulationManagerScript : MonoBehaviour {
 
             float fitness = GetFitness(currentMicrobe);
             listScript.PlaceMicrobe(chromosomeInd + 1, generation + 1, fitness, population[chromosomeInd]);
-            dataLogger.AddData((generation + 1).ToString(), (chromosomeInd + 1).ToString(), fitness.ToString(), distTravelled.ToString(), population[chromosomeInd].ChromosomeString);
+            string[] parents = population[chromosomeInd].GetParents();
+            dataLogger.AddData(generation.ToString(), 
+                               chromosomeInd.ToString(), 
+                               fitness.ToString(), 
+                               distTravelled.ToString(), 
+                               population[chromosomeInd].ChromosomeString,
+                               parents[0],
+                               parents[1]);
             
             Destroy(currentMicrobe);
             // If we have processed the final microbe, we can start the next gen
@@ -117,10 +124,8 @@ public class PopulationManagerScript : MonoBehaviour {
             distanceText.text = "Distance: " + GetFitness(currentMicrobe).ToString("n2") + "m";
 
             curPos = new Vector2(currentMicrobe.transform.position.x, currentMicrobe.transform.position.z);
-            if (prevPos != null)
-            {
-                distTravelled += Vector2.Distance(prevPos, curPos);
-            }
+            distTravelled += Vector2.Distance(prevPos, curPos);
+
             prevPos = curPos;
 
             MeshRenderer[] rends = currentMicrobe.GetComponentsInChildren<MeshRenderer>();

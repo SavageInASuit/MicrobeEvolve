@@ -60,39 +60,49 @@ public class MicrobeEvolveScript : MonoBehaviour {
 
         // Build up the next generation using roulette wheel selection
         // More likely to select chromosomes with higher fitness values
-        int ind = 0;
+        int indFirst = Random.Range(0, populationSize);
+        int indSecond = Random.Range(0, populationSize);
         for (int i = 0; i < populationSize; i++)
         {
             // Find the first parent
             float r = Random.value;
+            //Debug.Log("first r value: " + r);
+            //foreach (Chromosome c in population)
+            //{
+            //    Debug.Log(c.Fitness / maxFitness);
+            //}
+
             float cur = 0;
             while(cur <= r)
             {
                 // Add the normalised value
-                cur += population[ind].Fitness / maxFitness;
-                ind++;
-                ind %= populationSize;
+                cur += population[indFirst].Fitness / maxFitness;
+                indFirst++;
+                indFirst %= populationSize;
             }
-            ind -= 1;
-            if (ind == -1) ind = populationSize - 1;
-            Chromosome first = population[ind];
+            indFirst -= 1;
+            if (indFirst == -1) indFirst = populationSize - 1;
+            Chromosome first = population[indFirst];
 
             // Find the second parent
             r = Random.value;
             cur = 0;
             while (cur <= r)
             {
+                if (indSecond == indFirst)
+                    indSecond++;
+                indSecond %= populationSize;
                 // Add the normalised value
-                cur += population[ind].Fitness / maxFitness;
-                ind++;
-                ind %= populationSize;
+                cur += population[indSecond].Fitness / maxFitness;
+                indSecond++;
             }
-            ind -= 1;
-            if (ind == -1) ind = populationSize - 1;
-            Chromosome second = population[ind];
+            indSecond -= 1;
+            if (indSecond == -1) indSecond = populationSize - 1;
+            Chromosome second = population[indSecond];
 
             Chromosome child = Chromosome.Crossover(first, second);
             child = Chromosome.Mutate(child, mutationRate);
+            child.SetParents(indFirst, indSecond);
             nextGen[i] = child;
         }
 
