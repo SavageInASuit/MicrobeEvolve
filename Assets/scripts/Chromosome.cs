@@ -11,6 +11,7 @@ namespace Application
         private float hullScale, hullMass, hullBuoyancy;
         private int componentCount;
         private float fitness = 0f;
+        private string[] parents;
         private ComponentData[] componentData;
 
         // TODO: Should bit count variables be abstracted away? Options:
@@ -77,6 +78,19 @@ namespace Application
             }
 
             return new Chromosome(newChrom);
+        }
+
+        public void SetParents(int first, int second)
+        {
+            parents = new string[] { first.ToString(), second.ToString() };
+        }
+
+        public string[] GetParents()
+        {
+            if (parents == null)
+                return new string[] { "-1", "-1" };
+
+            return parents;
         }
 
         // Flip bits in the passed chromosome using the mutationRate as a probability
