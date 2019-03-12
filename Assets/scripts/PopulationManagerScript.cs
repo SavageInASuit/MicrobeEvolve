@@ -40,11 +40,16 @@ public class PopulationManagerScript : MonoBehaviour {
     private float simSpeed = 1;
     private bool paused;
 
+    private Vector2 prevPos;
+    private Vector2 curPos;
+    private float distTravelled;
+
     private Chromosome[] population;
     private GameObject currentMicrobe;
 
     MicrobeBuilderScript microbeBuilder;
     MicrobeEvolveScript microbeEvolver;
+    DataLoggerScript dataLogger;
 
     public ScoreListScript listScript;
 
@@ -52,6 +57,7 @@ public class PopulationManagerScript : MonoBehaviour {
     void Start () {
         microbeBuilder = GetComponent<MicrobeBuilderScript>();
         microbeEvolver = GetComponent<MicrobeEvolveScript>();
+        dataLogger = GetComponent<DataLoggerScript>();
 
         // Limit on distance travelled for fitness is the distance from the 
         // center point to the corner, otherwise microbe is out of pool
@@ -81,7 +87,9 @@ public class PopulationManagerScript : MonoBehaviour {
                 graph.ChangeLastPoint(maxGenDist);
             }
 
-            listScript.PlaceMicrobe(chromosomeInd + 1, generation + 1, GetFitness(currentMicrobe), population[chromosomeInd]);
+            float fitness = GetFitness(currentMicrobe);
+            listScript.PlaceMicrobe(chromosomeInd + 1, generation + 1, fitness, population[chromosomeInd]);
+            dataLogger.AddData((generation + 1).ToString(), (chromosomeInd + 1).ToString(), fitness.ToString(), distTravelled.ToString(), population[chromosomeInd].ChromosomeString);
             
             Destroy(currentMicrobe);
             // If we have processed the final microbe, we can start the next gen
@@ -95,6 +103,7 @@ public class PopulationManagerScript : MonoBehaviour {
                 return;
             }
 
+            distTravelled = 0f;
             StartMicrobe();
 
         }
@@ -106,6 +115,13 @@ public class PopulationManagerScript : MonoBehaviour {
         if (currentMicrobe != null)
         {
             distanceText.text = "Distance: " + GetFitness(currentMicrobe).ToString("n2") + "m";
+
+            curPos = new Vector2(currentMicrobe.transform.position.x, currentMicrobe.transform.position.z);
+            if (prevPos != null)
+            {
+                distTravelled += Vector2.Distance(prevPos, curPos);
+            }
+            prevPos = curPos;
 
             MeshRenderer[] rends = currentMicrobe.GetComponentsInChildren<MeshRenderer>();
             for (int i = 0; i < rends.Length; i++)
