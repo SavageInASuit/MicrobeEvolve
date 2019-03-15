@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Application;
+using MicrobeApplication;
 using UnityEngine;
 
 public class MicrobeEvolveScript : MonoBehaviour {
@@ -26,7 +26,7 @@ public class MicrobeEvolveScript : MonoBehaviour {
 
     PopulationManagerScript popManager;
 
-    void GenerateInitialPopulation(){
+    public void GenerateInitialPopulation(){
         for (int i = 0; i < populationSize; i++){
             Chromosome chromosome = Chromosome.RandomChromosome();
             population[i] = chromosome;

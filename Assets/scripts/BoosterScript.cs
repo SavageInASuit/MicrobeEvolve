@@ -4,13 +4,22 @@ using UnityEngine;
 
 public class BoosterScript : MonoBehaviour {
 
-    [SerializeField] public float boostForce = 300f;
+    private float boostForce;
+
+    public float BoostForce
+    {
+        get
+        {
+            return boostForce;
+        }
+    }
 
     Rigidbody body;
 
 	// Use this for initialization
 	void Start () {
         body = GetComponent<Rigidbody>();
+        boostForce = InstanceData.BoosterForce;
 	}
 	
 	// Update is called once per frame
