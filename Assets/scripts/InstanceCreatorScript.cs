@@ -33,6 +33,7 @@ public class InstanceCreatorScript : MonoBehaviour
         InstanceData.GenerationTime = (int) genTimeSlider.value;
         InstanceData.PopulationSize = (int) popSizeSlider.value;
         InstanceData.MutationRate = mutationRateSlider.value;
+        InstanceData.DataCollectionMode = false;
 
         SceneManager.LoadScene("MainScene");
     }

@@ -37,7 +37,7 @@ public class BuoyancyControlScript : MonoBehaviour
         boosters = GetComponentsInChildren<BoosterScript>();
 
         foreach(BoosterScript booster in boosters)
-            booster.SetBoostForce(booster.boostForce/2);
+            booster.SetBoostForce(booster.BoostForce/2);
     }
 
     // Update is called once per frame
@@ -53,7 +53,7 @@ public class BuoyancyControlScript : MonoBehaviour
                 cf.force = bouyancyForce;
 
                 foreach (BoosterScript booster in boosters)
-                    booster.SetBoostForce(booster.boostForce*2);
+                    booster.SetBoostForce(booster.BoostForce*2);
 
                 bouyantMode = true;
             }
@@ -65,7 +65,7 @@ public class BuoyancyControlScript : MonoBehaviour
                 cf.force = Vector3.zero;
 
                 foreach (BoosterScript booster in boosters)
-                    booster.SetBoostForce(booster.boostForce/2);
+                    booster.SetBoostForce(booster.BoostForce/2);
 
                 bouyantMode = false;
             }

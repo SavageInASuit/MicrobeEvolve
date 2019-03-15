@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Application;
+using MicrobeApplication;
 using UnityEngine;
 
 public class MicrobeEvolveScript : MonoBehaviour {
@@ -26,7 +26,7 @@ public class MicrobeEvolveScript : MonoBehaviour {
 
     PopulationManagerScript popManager;
 
-    void GenerateInitialPopulation(){
+    public void GenerateInitialPopulation(){
         for (int i = 0; i < populationSize; i++){
             Chromosome chromosome = Chromosome.RandomChromosome();
             population[i] = chromosome;
@@ -101,7 +101,10 @@ public class MicrobeEvolveScript : MonoBehaviour {
             Chromosome second = population[indSecond];
 
             Chromosome child = Chromosome.Crossover(first, second);
-            child = Chromosome.Mutate(child, mutationRate);
+            if (InstanceData.SingleMutate)
+                child = Chromosome.MutateSingle(child, mutationRate);
+            else
+                child = Chromosome.Mutate(child, mutationRate);
             child.SetParents(indFirst, indSecond);
             nextGen[i] = child;
         }

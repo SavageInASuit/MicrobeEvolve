@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-using Application;
+using MicrobeApplication;
 
 public class ScoreListScript : MonoBehaviour {
 

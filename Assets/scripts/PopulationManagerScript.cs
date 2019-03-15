@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Application;
+using MicrobeApplication;
 using UnityEngine;
 using TMPro;
 
@@ -67,7 +67,7 @@ public class PopulationManagerScript : MonoBehaviour {
         chromosomeInd = -1;
 
         roundTime = InstanceData.GenerationTime;
-        Time.timeScale = 1f;
+        Time.timeScale = InstanceData.SimSpeed;
 
         generationText.text = "Gen: " + (generation + 1);
     }
@@ -165,6 +165,24 @@ public class PopulationManagerScript : MonoBehaviour {
         population = chromosomes;
 
         generation++;
+        if (InstanceData.DataCollectionMode && generation == InstanceData.RunGenerations)
+        {
+            dataLogger.WriteLog();
+            dataLogger.InitialiseLogger();
+            generation = -1;
+            microbeEvolver.GenerateInitialPopulation();
+            InstanceData.RunsCompleted++;
+            Debug.Log("Completed = " + InstanceData.RunsCompleted + ", todo = " + InstanceData.Runs);
+            if (InstanceData.RunsCompleted == InstanceData.Runs)
+            {
+# if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+#else
+                Application.Quit();
+#endif
+            }
+            return;
+        }
         chromosomeInd = -1;
         generationText.text = "Gen: " + (generation + 1);
 

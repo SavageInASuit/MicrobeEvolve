@@ -1,6 +1,6 @@
 ﻿using System;
 using UnityEngine;
-namespace Application
+namespace MicrobeApplication
 {
     public class ComponentData
     {
