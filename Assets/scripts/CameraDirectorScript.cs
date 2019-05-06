@@ -19,6 +19,8 @@ public class CameraDirectorScript : MonoBehaviour {
     private readonly float mouseClickDelay = 0.3f;
     private bool mouseDown = false;
 
+    private int activeCam;
+
     public void Start()
     {
         switchButton.onClick.AddListener(NextCamera);
@@ -30,6 +32,10 @@ public class CameraDirectorScript : MonoBehaviour {
             if (i == m_CurrentActiveObject)
                 buttonText.text = objects[(i + 1) % objects.Length].name;
         }
+
+        // Set overview camera height relative to pool size
+        Transform ot = objects[1].transform;
+        ot.localPosition = ot.localPosition + Vector3.up * 300f;
     }
 
     private void OnEnable()
@@ -67,7 +73,14 @@ public class CameraDirectorScript : MonoBehaviour {
 
             casting = false;
         }
-       
+
+        if (activeCam == 1){
+            float scroll = Input.GetAxis("Mouse ScrollWheel") * 10;
+            Vector3 pos = objects[activeCam].transform.localPosition;
+            if ((scroll > float.Epsilon && pos.y < 600) || (scroll < -float.Epsilon && pos.y > 0))
+                pos += Vector3.up * scroll;
+            objects[activeCam].transform.localPosition = pos;
+        }
     }
 
 
@@ -81,6 +94,8 @@ public class CameraDirectorScript : MonoBehaviour {
             if (i == nextactiveobject)
                 buttonText.text = objects[(i + 1) % objects.Length].name;
         }
+
+        activeCam = nextactiveobject;
 
         m_CurrentActiveObject = nextactiveobject;
         text.text = objects[m_CurrentActiveObject].name;

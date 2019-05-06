@@ -7,6 +7,8 @@ public class ExitToMenuScript : MonoBehaviour
 {
     public void ExitToMenu()
     {
+        InstanceData.SimSpeed = 1f;
+        Time.timeScale = 1f;
         SceneManager.LoadScene("MainMenuScene");
     }
 }

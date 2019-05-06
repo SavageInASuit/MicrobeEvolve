@@ -14,6 +14,9 @@ public class InstructionsCollapseScript : MonoBehaviour
 
     private Vector3 origPos;
 
+    [SerializeField]
+    private bool collapseLeft;
+
     public void Start()
     {
         rt = GetComponent<RectTransform>();
@@ -29,16 +32,26 @@ public class InstructionsCollapseScript : MonoBehaviour
             // rt.Translate(panelWidth, 0, 0);
 
             rt.anchoredPosition = origPos;
-            collapseButton.rotation = Quaternion.Euler(0, 0, 0);
+            if (collapseLeft)
+                collapseButton.rotation = Quaternion.Euler(0, 0, 0);
+            else
+                collapseButton.rotation = Quaternion.Euler(0, 0, 180);
 
             collapsed = false;
         }
         else
         {
             // rt.Translate(-panelWidth, 0, 0);
-
-            rt.anchoredPosition = origPos - new Vector3(panelWidth, 0, 0);
-            collapseButton.rotation = Quaternion.Euler(0, 0, 180);
+            if (collapseLeft)
+            {
+                rt.anchoredPosition = origPos - new Vector3(panelWidth, 0, 0);
+                collapseButton.rotation = Quaternion.Euler(0, 0, 180);
+            }
+            else
+            {
+                rt.anchoredPosition = origPos + new Vector3(panelWidth, 0, 0);
+                collapseButton.rotation = Quaternion.Euler(0, 0, 0);
+            }
 
             collapsed = true;
         }

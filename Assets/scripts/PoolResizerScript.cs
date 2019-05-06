@@ -35,6 +35,6 @@ public class PoolResizerScript : MonoBehaviour
         floor.localPosition = new Vector3(0f, -poolHeight, 0f);
 
         waterSurfaces[0].localScale = new Vector3(scale, 1f, scale);
-        waterSurfaces[0].localScale = new Vector3(scale, 1f, scale);
+        waterSurfaces[1].localScale = new Vector3(scale, 1f, scale);
     }
 }

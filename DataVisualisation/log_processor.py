@@ -42,7 +42,6 @@ def sched_process_logs(scheder):
     scheder.enter(10, 1, process_logs, (scheder,))
 
 def main():
-    # TODO: Loop every 5 minutes and process any new log files
     print("starting scheduler")
     s = sched.scheduler(time.time, time.sleep)
     s.enter(10, 1, sched_process_logs, (s,))

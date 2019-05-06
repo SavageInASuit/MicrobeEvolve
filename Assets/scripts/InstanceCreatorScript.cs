@@ -6,6 +6,14 @@ using TMPro;
 
 public class InstanceCreatorScript : MonoBehaviour
 {
+    [SerializeField]
+    private TMP_Text titleText;
+
+    [SerializeField]
+    private TMP_Text mutTitle;
+    [SerializeField]
+    private TMP_Text mutDescription;
+
     public Button startInstanceButton;
     public Button backToMainMenuButton;
 
@@ -17,6 +25,11 @@ public class InstanceCreatorScript : MonoBehaviour
     public TextMeshProUGUI genTimeText;
     public TextMeshProUGUI mutationRateText;
 
+    [SerializeField]
+    private Toggle singleBitToggle;
+    [SerializeField]
+    private Toggle randomBitToggle;
+
     public void Start()
     {
         startInstanceButton.onClick.AddListener(StartInstance);
@@ -25,6 +38,13 @@ public class InstanceCreatorScript : MonoBehaviour
         popSizeSlider.onValueChanged.AddListener(UpdatePopulationText);
         genTimeSlider.onValueChanged.AddListener(UpdateTimeText);
         mutationRateSlider.onValueChanged.AddListener(UpdateMutationText);
+
+        singleBitToggle.onValueChanged.AddListener(MutationTypeChanged);
+
+        if (InstanceData.FFAMode)
+            titleText.text = "FFA Instance Creator";
+        else
+            titleText.text = "Sequential Instance Creator";
     }
 
     public void StartInstance()
@@ -35,7 +55,15 @@ public class InstanceCreatorScript : MonoBehaviour
         InstanceData.MutationRate = mutationRateSlider.value;
         InstanceData.DataCollectionMode = false;
 
-        SceneManager.LoadScene("MainScene");
+        if (singleBitToggle.isOn)
+            InstanceData.SingleMutate = true;
+        else if (randomBitToggle.isOn)
+            InstanceData.SingleMutate = false;
+
+        if (InstanceData.FFAMode)
+            SceneManager.LoadScene("FreeForAllScene");
+        else
+            SceneManager.LoadScene("MainScene");
     }
 
     public void GoBackToMainMenu()
@@ -56,5 +84,19 @@ public class InstanceCreatorScript : MonoBehaviour
     void UpdateTimeText(float value)
     {
         genTimeText.text = value.ToString() + " seconds";
+    }
+
+    void MutationTypeChanged(bool val)
+    {
+        if (singleBitToggle.isOn)
+        {
+            mutTitle.text = "Single Bit Mutation";
+            mutDescription.text = "Only a single bit of the microbe's chromosome is flipped at mutation time.\n\n(with a probability equal to mutation rate)";
+        }
+        else
+        {
+            mutTitle.text = "Random Bit Mutation";
+            mutDescription.text = "Each bit of the microbe's chromosome is flipped.\n\n(with a probability equal to mutation rate)";
+        }
     }
 }

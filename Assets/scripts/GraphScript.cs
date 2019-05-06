@@ -67,7 +67,7 @@ public class GraphScript : MonoBehaviour
         // dy/dx = (1.32 - 2.35) / (0.7521 - 0.4271) = -3.1692
         // -3.1692 * 0.4271 + b = 2.35
         // 2.35 + (3.1692 * 0.4271) = b = 3.7036
-        magicDivider = (-3.1692f * canvasRect.localScale.x) + 3.7036f;
+        magicDivider = (-1.55f * canvasRect.lossyScale.x) + 2.55f;
 
         RedrawGraph();
     }
@@ -171,8 +171,10 @@ public class GraphScript : MonoBehaviour
         Vector2 pos = new Vector2((p1.x + p2.x) / 2f, (p1.y + p2.y) / 2f);
         rect.anchoredPosition = pos;
 
+        Debug.Log(Vector2.Distance(p1, p2));
         // Dividing by magic value to make lines the correct length...
         float length = Vector2.Distance(p1, p2) / magicDivider;
+
         rect.sizeDelta = new Vector2(length, 2);
 
         Vector2 dir = (p2 - p1).normalized;

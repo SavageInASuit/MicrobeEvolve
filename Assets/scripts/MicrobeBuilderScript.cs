@@ -256,9 +256,10 @@ public class MicrobeBuilderScript : MonoBehaviour
             meshNorms.RemoveAt(ind);
         }
 
-        director.SetCameraTarget(mainBody);
+        if (director)
+            director.SetCameraTarget(mainBody);
         BuoyancyControlScript b = container.GetComponent<BuoyancyControlScript>();
-        if (b != null)
+        if (b && water)
         {
             b.waterSurface = water.transform;
             b.SetRigidBody(container.GetComponent<Rigidbody>());

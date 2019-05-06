@@ -14,39 +14,25 @@ namespace MicrobeApplication
         private string[] parents;
         private ComponentData[] componentData;
 
-        // TODO: Should bit count variables be abstracted away? Options:
-        //           - Accept a map in the constructor -> <string, int> GENE_NAME => GENE_BITS
-        //             and provide functions to access the values
-        //           - Remove variables from this class and then create a subclass
-        //             which contains these variables
-        //           - Create an enumeration/class that specifies gene names and bit counts
-        // 
-        // TODO: Implement component bits specifying booster force and possibly
-        //       leg movement speed
-        private const int HULL_ID_BITS = 3;
-        private const int HULL_SCALE_BITS = 4;
-        private const int HULL_MASS_BITS = 4;
-        private const int HULL_BUOYANCY_BITS = 4;
-        private const int COMPONENT_COUNT_BITS = 3; // 8 options 0-7
-        private const int COMPONENT_ID_BITS = 4; // 16 options
-        private const int COMPONENT_MESHV_BITS = 10; // 1024 options
+        public const int HULL_ID_BITS = 3;
+        public const int HULL_SCALE_BITS = 4;
+        public const int HULL_MASS_BITS = 4;
+        public const int HULL_BUOYANCY_BITS = 4;
+        public const int COMPONENT_COUNT_BITS = 3; // 8 options 0-7
+        public const int COMPONENT_ID_BITS = 4; // 16 options
+        public const int COMPONENT_MESHV_BITS = 10; // 1024 options
         public const int COMPONENT_SCALE_BITS = 4; // 16 options 1/16, 1/16, 2/16...
-        private const int COMPONENT_ROTATION_BITS = 9; // x: 0-359, y: 0-359, z: 0-359
+        public const int COMPONENT_ROTATION_BITS = 9; // x: 0-359, y: 0-359, z: 0-359
+        public const int TOTAL_HULL_BITS = HULL_ID_BITS + HULL_SCALE_BITS + HULL_MASS_BITS + HULL_BUOYANCY_BITS + COMPONENT_COUNT_BITS; // 18
+        public const int TOTAL_COMPONENT_BITS = COMPONENT_ID_BITS + COMPONENT_MESHV_BITS + COMPONENT_SCALE_BITS + (COMPONENT_ROTATION_BITS * 3); // 45
 
-        public static readonly int CHROMOSOME_LENGTH = HULL_ID_BITS +
-                                                        HULL_SCALE_BITS +
-                                                        HULL_MASS_BITS +
-                                                        HULL_BUOYANCY_BITS +
-                                                        COMPONENT_COUNT_BITS +
-                                                        ((COMPONENT_ID_BITS +
-                                                        COMPONENT_MESHV_BITS +
-                                                        COMPONENT_SCALE_BITS +
-                                                        COMPONENT_ROTATION_BITS) * (int)Math.Pow(2, COMPONENT_COUNT_BITS));
+        public static readonly int CHROMOSOME_LENGTH = TOTAL_HULL_BITS +
+                                                        (TOTAL_COMPONENT_BITS * ((int)Math.Pow(2, COMPONENT_COUNT_BITS) - 1));
 
         public Chromosome(string chromosome)
         {
             // provided chromosome should be the correct length
-            Debug.Assert(chromosome.Length == CHROMOSOME_LENGTH);
+            // Debug.Assert(chromosome.Length == CHROMOSOME_LENGTH, "Passed string is not the correct length for a chromosome string");
 
             chromosomeString = chromosome;
             ParseChromosome();
@@ -100,7 +86,8 @@ namespace MicrobeApplication
 
             if (UnityEngine.Random.value < mutationRate)
             {
-                int charInd = (int) Mathf.Floor(UnityEngine.Random.value * oldChrom.Length);
+                float activeBits = TOTAL_HULL_BITS + (toMutate.componentCount * TOTAL_COMPONENT_BITS);
+                int charInd = (int) Mathf.Floor(UnityEngine.Random.value * activeBits);
                 if (oldChrom[charInd] == '1')
                     oldChrom[charInd] = '0';
                 else
@@ -156,6 +143,11 @@ namespace MicrobeApplication
             }
         }
 
+        public ComponentData[] GetComponents()
+        {
+            return componentData;
+        }
+
         public string GetChromosomeAsHex()
         {
             string output = "";
@@ -170,6 +162,24 @@ namespace MicrobeApplication
                 output += h_val.ToString("X");
             }
             return output;
+        }
+
+        public static bool IsValidChromosome(string chromosomeString)
+        {
+            // Check chromosome is the correct length
+            if (chromosomeString.Length != CHROMOSOME_LENGTH)
+            {
+                return false;
+            }
+            // Check chromosome only contains 0s and 1s
+            int count = 0;
+            foreach (char c in chromosomeString)
+            {
+                if (c == '0' || c == '1')
+                    count++;
+            }
+
+            return count == CHROMOSOME_LENGTH;
         }
 
         private int BinToDec(string gene){

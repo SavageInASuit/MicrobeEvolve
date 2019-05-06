@@ -18,9 +18,9 @@ public class MicrobeEvolveScript : MonoBehaviour {
      * specified size (defined in init options)
      */
 
-    [Range(0.01f, 1f)] [SerializeField] private float mutationRate = 0.05f;   // Probability of each bit in chromosome flipping
+    private float mutationRate = 0.05f;   // Probability of each bit in chromosome flipping
     // Should probably have a min value of 3 for the algorithm to work? 
-    [Range(1, 100)] [SerializeField] private int populationSize;    // Size of the population throughout the evolution process
+    private int populationSize;    // Size of the population throughout the evolution process
 
     Chromosome[] population;
 
@@ -101,10 +101,12 @@ public class MicrobeEvolveScript : MonoBehaviour {
             Chromosome second = population[indSecond];
 
             Chromosome child = Chromosome.Crossover(first, second);
+
             if (InstanceData.SingleMutate)
                 child = Chromosome.MutateSingle(child, mutationRate);
             else
                 child = Chromosome.Mutate(child, mutationRate);
+
             child.SetParents(indFirst, indSecond);
             nextGen[i] = child;
         }

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BoosterScript : MonoBehaviour {
+    [SerializeField]
+    private float boostForce = InstanceData.BoosterForce;
 
-    private float boostForce;
+    Rigidbody body;
 
     public float BoostForce
     {
@@ -14,17 +16,14 @@ public class BoosterScript : MonoBehaviour {
         }
     }
 
-    Rigidbody body;
-
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
         body = GetComponent<Rigidbody>();
-        boostForce = InstanceData.BoosterForce;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        body.AddForce(transform.forward * boostForce * Time.deltaTime); // * Input.GetAxis("Vertical"));
+        body.AddForce(transform.forward * BoostForce * Time.deltaTime);
 	}
 
     public void SetBoostForce(float force){

@@ -12,7 +12,8 @@ public class EntrySelectorScript : MonoBehaviour
     EventSystem m_EventSystem;
 
     [SerializeField]
-    private SaveChromosomeScript saveChromosome;
+    private MicrobeStorageScript microbeStorageScript;
+    
 
     void Start()
     {
@@ -52,10 +53,12 @@ public class EntrySelectorScript : MonoBehaviour
 
             if(entry != null)
             {
-                saveChromosome.SetTextboxText(entry.GetChromosome().ChromosomeString);
+                string chromString = entry.GetChromosome().ChromosomeString;
+                microbeStorageScript.SetTextboxText(chromString);
+                microbeStorageScript.ChromosomeString = chromString;
 
                 // Show the text box containing the chromosome string for copying
-                saveChromosome.Open();
+                microbeStorageScript.Open();
             }
         }
     }

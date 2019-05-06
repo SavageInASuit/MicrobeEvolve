@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using MicrobeApplication;
 using TMPro;
 
 public class MenuManagerScript : MonoBehaviour
@@ -15,8 +16,6 @@ public class MenuManagerScript : MonoBehaviour
     private Button loadMicrobeButton;
     [SerializeField]
     private Button exitButton;
-    [SerializeField]
-    private TMP_InputField chromosomeInput;
 
     // Start is called before the first frame update
     void Start()
@@ -24,28 +23,32 @@ public class MenuManagerScript : MonoBehaviour
         newInstanceButton.onClick.AddListener(GoToNewInstanceScene);
         newFreeforallInstanceButton.onClick.AddListener(GoToFreeforallScene);
         loadMicrobeButton.onClick.AddListener(GoToLoadMicrobeScene);
-        exitButton.onClick.AddListener(GoToNewInstanceScene);
+        exitButton.onClick.AddListener(ExitProgram);
     }
 
     public void GoToNewInstanceScene()
     {
+        InstanceData.FFAMode = false;
         SceneManager.LoadScene("InstanceMenuScene");
     }
 
     public void GoToFreeforallScene()
     {
-        SceneManager.LoadScene("FreeForAllScene");
+        InstanceData.FFAMode = true;
+        SceneManager.LoadScene("InstanceMenuScene");
     }
 
     public void GoToLoadMicrobeScene()
     {
-        // Put the chromosome code into the instance data object
-        InstanceData.ChromosomeString = chromosomeInput.text;
-        SceneManager.LoadScene("LoadedMicrobeScene");
+        SceneManager.LoadScene("LoadMicrobeMenuScene");
     }
 
     public void ExitProgram()
     {
-
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
 }

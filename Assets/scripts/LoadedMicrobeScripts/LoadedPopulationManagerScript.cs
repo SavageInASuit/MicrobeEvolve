@@ -12,10 +12,16 @@ public class LoadedPopulationManagerScript : MonoBehaviour {
     private TextMeshProUGUI distanceText;
     [SerializeField]
     private TextMeshProUGUI simSpeedText;
+    [SerializeField]
+    private GameObject pausedText;
 
     private GameObject loadedMicrobe;
 
     MicrobeBuilderScript microbeBuilder;
+
+    private float simSpeed;
+
+    private bool paused;
 
     // public ScoreListScript listScript;
 
@@ -26,6 +32,9 @@ public class LoadedPopulationManagerScript : MonoBehaviour {
         Chromosome c = new Chromosome(InstanceData.ChromosomeString);
 
         loadedMicrobe = microbeBuilder.CreateInitialMicrobe(c);
+
+        Time.timeScale = InstanceData.SimSpeed;
+        simSpeed = InstanceData.SimSpeed;
     }
 
     // Update is called once per frame
@@ -54,17 +63,35 @@ public class LoadedPopulationManagerScript : MonoBehaviour {
     {
         if (Input.GetKeyDown("space"))
         {
-            Time.timeScale = 1;
+            simSpeed = 1;
             simSpeedText.text = "Sim Speed: " + Time.timeScale + "x";
         }else if (Input.GetKeyDown("up"))
         {
-            Time.timeScale += 1;
+            simSpeed += 1;
             simSpeedText.text = "Sim Speed: " + Time.timeScale + "x";
         }
         else if (Input.GetKeyDown("down") && Time.timeScale > 0)
         {
-            Time.timeScale -= 1;
+            simSpeed -= 1;
             simSpeedText.text = "Sim Speed: " + Time.timeScale + "x";
         }
+        else if (Input.GetKeyDown(KeyCode.P))
+        {
+            if (Time.timeScale == 0)
+            {
+                Time.timeScale = simSpeed;
+                paused = false;
+            }
+            else
+            {
+                Time.timeScale = 0;
+                paused = true;
+            }
+
+            pausedText.SetActive(paused);
+        }
+
+        if (!paused)
+            Time.timeScale = simSpeed;
     }
 }

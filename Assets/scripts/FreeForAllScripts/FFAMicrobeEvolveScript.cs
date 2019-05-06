@@ -17,17 +17,19 @@ public class FFAMicrobeEvolveScript : MonoBehaviour {
      * When the scene first loads, a population should be generated at the
      * specified size (defined in init options)
      */
-
-    [Range(0.01f, 1f)] [SerializeField] private float mutationRate = 0.05f;   // Probability of each bit in chromosome flipping
+    // Probability of each bit in chromosome flipping
+    private float mutationRate;
     // Should probably have a min value of 3 for the algorithm to work? 
-    [Range(1, 100)] [SerializeField] private int populationSize;    // Size of the population throughout the evolution process
+    private int populationSize;    // Size of the population throughout the evolution process
 
     Chromosome[] population;
 
     FFAPopulationManagerScript popManager;
 
-    void GenerateInitialPopulation(){
-        for (int i = 0; i < populationSize; i++){
+    public void GenerateInitialPopulation()
+    {
+        for (int i = 0; i < populationSize; i++)
+        {
             Chromosome chromosome = Chromosome.RandomChromosome();
             population[i] = chromosome;
         }
@@ -36,7 +38,8 @@ public class FFAMicrobeEvolveScript : MonoBehaviour {
     }
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         popManager = GetComponent<FFAPopulationManagerScript>();
 
         populationSize = InstanceData.PopulationSize;
@@ -44,7 +47,7 @@ public class FFAMicrobeEvolveScript : MonoBehaviour {
 
         population = new Chromosome[populationSize];
         GenerateInitialPopulation();
-	}
+    }
 
     public void EvolveNextGeneration()
     {
@@ -52,7 +55,7 @@ public class FFAMicrobeEvolveScript : MonoBehaviour {
 
         // Find the max to use for normalisation when selecting
         float maxFitness = 0;
-        foreach(Chromosome c in population)
+        foreach (Chromosome c in population)
         {
             if (c.Fitness > maxFitness)
                 maxFitness = c.Fitness;
@@ -60,39 +63,54 @@ public class FFAMicrobeEvolveScript : MonoBehaviour {
 
         // Build up the next generation using roulette wheel selection
         // More likely to select chromosomes with higher fitness values
-        int ind = 0;
+        int indFirst = Random.Range(0, populationSize);
+        int indSecond = Random.Range(0, populationSize);
         for (int i = 0; i < populationSize; i++)
         {
             // Find the first parent
             float r = Random.value;
+            //Debug.Log("first r value: " + r);
+            //foreach (Chromosome c in population)
+            //{
+            //    Debug.Log(c.Fitness / maxFitness);
+            //}
+
             float cur = 0;
-            while(cur <= r)
+            while (cur <= r)
             {
                 // Add the normalised value
-                cur += population[ind].Fitness / maxFitness;
-                ind++;
-                ind %= populationSize;
+                cur += population[indFirst].Fitness / maxFitness;
+                indFirst++;
+                indFirst %= populationSize;
             }
-            ind -= 1;
-            if (ind == -1) ind = populationSize - 1;
-            Chromosome first = population[ind];
+            indFirst -= 1;
+            if (indFirst == -1) indFirst = populationSize - 1;
+            Chromosome first = population[indFirst];
 
             // Find the second parent
             r = Random.value;
             cur = 0;
             while (cur <= r)
             {
+                if (indSecond == indFirst)
+                    indSecond++;
+                indSecond %= populationSize;
                 // Add the normalised value
-                cur += population[ind].Fitness / maxFitness;
-                ind++;
-                ind %= populationSize;
+                cur += population[indSecond].Fitness / maxFitness;
+                indSecond++;
             }
-            ind -= 1;
-            if (ind == -1) ind = populationSize - 1;
-            Chromosome second = population[ind];
+            indSecond -= 1;
+            if (indSecond == -1) indSecond = populationSize - 1;
+            Chromosome second = population[indSecond];
 
             Chromosome child = Chromosome.Crossover(first, second);
-            child = Chromosome.Mutate(child, mutationRate);
+
+            if (InstanceData.SingleMutate)
+                child = Chromosome.MutateSingle(child, mutationRate);
+            else
+                child = Chromosome.Mutate(child, mutationRate);
+
+            child.SetParents(indFirst, indSecond);
             nextGen[i] = child;
         }
 

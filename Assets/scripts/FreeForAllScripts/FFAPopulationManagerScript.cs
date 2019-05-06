@@ -18,6 +18,8 @@ public class FFAPopulationManagerScript : MonoBehaviour {
     private TextMeshProUGUI simSpeedText;
     [SerializeField]
     private TextMeshProUGUI lifeTimeText;
+    [SerializeField]
+    private GameObject pausedText;
 
     [SerializeField]
     private float roundTime;
@@ -34,7 +36,10 @@ public class FFAPopulationManagerScript : MonoBehaviour {
     // TODO: change to being current best? Have the best be highlighted in the scene
     private GameObject currentMicrobe;
     private GameObject[] currentMicrobes;
+    private MeshRenderer[] fittest;
     private bool needToSpawn = true;
+
+    private float maxFitness;
 
     MicrobeBuilderScript microbeBuilder;
     FFAMicrobeEvolveScript microbeEvolver;
@@ -51,14 +56,17 @@ public class FFAPopulationManagerScript : MonoBehaviour {
         generation = 0;
         chromosomeInd = 0;
 
+        maxFitness = 0;
+
         roundTime = InstanceData.GenerationTime;
-        Time.timeScale = 1f;
+        Time.timeScale = InstanceData.SimSpeed;
+        simSpeed = InstanceData.SimSpeed;
 
         generationText.text = "Gen: " + (generation + 1);
         // microbeText.text = "microbe: " + (chromosomeInd+1) + "/" + population.Length;
     }
 
-    // TODO: Fix fitness mechanics to handle the whole generation spawning at the same time
+
     void Update() {
         float curTime = Time.time - startTime;
         lifeTimeText.text = "Time: " + curTime.ToString("n1") + "/" + roundTime.ToString() + "s";
@@ -69,6 +77,7 @@ public class FFAPopulationManagerScript : MonoBehaviour {
         }
         if (population != null && needToSpawn == true && microbeBuilder != null)
         {
+            Debug.Log("MaxFitness: " + maxFitness);
             microbeEvolver.EvolveNextGeneration();
 
             StartMicrobes();
@@ -81,22 +90,47 @@ public class FFAPopulationManagerScript : MonoBehaviour {
 
         CheckSpeed();
 
-        //MeshRenderer[] rends = currentMicrobe.GetComponentsInChildren<MeshRenderer>();
-        //for (int i = 0; i < rends.Length; i++)
-        //{
-        //    Color c = rends[i].material.color;
-        //    c.g -= 1f / roundTime * Time.deltaTime;
-        //    c.b -= 1f / roundTime * Time.deltaTime;
-        //    rends[i].material.color = c;
-        //}
+        // Get the microbe with the highest fitness and colour them in the scene...
+        // perhaps make the camera focus on them?
+        // reset last frame's fittest
+        if (fittest != null)
+        {
+            for (int i = 0; i < fittest.Length; i++)
+            {
+                Color c = fittest[i].material.color;
+                c.r = 1;
+                c.b = 1f;
+                fittest[i].material.color = c;
+            }
+        }
+        GameObject fittestChrom = currentMicrobes[0];
+        maxFitness = 0;
+        foreach (GameObject go in currentMicrobes)
+        {
+            float fitness = GetFitness(go);
+            if (fitness > maxFitness)
+            {
+                fittestChrom = go;
+                maxFitness = fitness;
+            }
+        }
+        fittest = fittestChrom.GetComponentsInChildren<MeshRenderer>();
+        for (int i = 0; i < fittest.Length; i++)
+        {
+            Color c = fittest[i].material.color;
+            c.g = 1f;
+            c.b = 0f;
+            c.r = 0f;
+            fittest[i].material.color = c;
+        }
     }
 
     void StartMicrobes()
     {
         if (needToSpawn)
         {
-            Debug.Log("Needed to spawn microbes!");
-            microbeText.text = "Microbe: " + (chromosomeInd + 1) + " of " + population.Length;
+            //Debug.Log("Needed to spawn microbes!");
+            //microbeText.text = "Microbe: " + (chromosomeInd + 1) + " of " + population.Length;
 
             if (microbeBuilder != null)
             {
@@ -191,6 +225,8 @@ public class FFAPopulationManagerScript : MonoBehaviour {
                     Time.timeScale = 0;
                     paused = true;
                 }
+
+                pausedText.SetActive(paused);
             }
 
             if (!paused)

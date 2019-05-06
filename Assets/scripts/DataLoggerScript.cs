@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +6,8 @@ public class DataLoggerScript : MonoBehaviour
 {
     private readonly string filePathPrefix = "logs/";
     private string fullPath;
-    private string columnTitles = "generation,microbe,max_distance,distance_travelled,parent1,parent2,chromosome";
+    private string[] columnTitles = { "generation", "microbe", "max_distance", "distance_travelled", "parent1", "parent2", "chromosome", "" };
+    private string columnTitlesStr;
 
     private List<string[]> data;
 
@@ -24,16 +24,18 @@ public class DataLoggerScript : MonoBehaviour
     {
         data.Clear();
 
-        TimeSpan ts = DateTime.UtcNow - new DateTime(1970, 1, 1);
-
         string muteType = InstanceData.SingleMutate ? "single-bit" : "random-bits";
         string muteRate = InstanceData.MutationRate.ToString().Replace('.', '-');
         muteType += '-' + muteRate;
         string poolSize = (InstanceData.PoolScale * 10).ToString();
+        // pathPostfix = population_generations_mutation-type-mutation-rate_pool-size
         string pathPostfix = "pop-" + InstanceData.PopulationSize +
+                             "_gens-" + InstanceData.RunGenerations +
                              "_" + muteType +
                              "_" + poolSize;
-        columnTitles += "," + pathPostfix;
+        columnTitles[columnTitles.Length - 1] = pathPostfix;
+
+        columnTitlesStr = string.Join(",", columnTitles);
 
         fullPath = filePathPrefix +
                    pathPostfix + "_" +
@@ -61,7 +63,7 @@ public class DataLoggerScript : MonoBehaviour
     {
         using (StreamWriter sw = File.CreateText(fullPath))
         {
-            sw.WriteLine(columnTitles);
+            sw.WriteLine(columnTitlesStr);
             foreach (string[] entry in data)
             {
                 sw.WriteLine("{0},{1},{2},{3},{4},{5},{6}", entry);
@@ -69,9 +71,4 @@ public class DataLoggerScript : MonoBehaviour
             }
         }
     }
-
-    //private void OnApplicationQuit()
-    //{
-    //    WriteLog();
-    //}
 }
